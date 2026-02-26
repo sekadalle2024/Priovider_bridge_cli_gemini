@@ -1,0 +1,28 @@
+# Configuration Netlify pour AionUI
+# Netlify configuration for AionUI
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Redirections pour les fonctions serverless
+# Redirects for serverless functions
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/gemini-chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate"
+  to = "/.netlify/functions/gemini-generate"
+  status = 200
+
+# Variables d'environnement (à configurer dans Netlify UI)
+# Environment variables (configure in Netlify UI):
+# - GEMINI_API_KEY: Votre clé API Gemini
+# - GEMINI_MODEL: Modèle à utiliser (défaut: gemini-2.0-flash-exp)
+# - GOOGLE_GEMINI_BASE_URL: URL de base (optionnel)

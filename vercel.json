@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat.ts"
+    },
+    {
+      "src": "/api/generate",
+      "dest": "/api/generate.ts"
+    }
+  ],
+  "env": {
+    "NODE_VERSION": "22"
+  }
+}
