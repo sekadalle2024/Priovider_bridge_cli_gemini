@@ -1,0 +1,177 @@
+{
+  "name": "Gemini API - Test Complet",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "prompt",
+              "value": "Quelle est la capitale du Sénégal?"
+            }
+          ]
+        }
+      },
+      "id": "set-prompt",
+      "name": "Set Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:25808/api/chat",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.prompt }}\"\n    }\n  ],\n  \"stream\": false,\n  \"options\": {\n    \"temperature\": 0.7\n  }\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "http-request",
+      "name": "Gemini API (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire la réponse du format Ollama\nconst response = $input.item.json;\n\nreturn {\n  json: {\n    prompt: $('Set Prompt').item.json.prompt,\n    response: response.message.content,\n    model: response.model,\n    provider: response.provider,\n    keyUsed: response.keyUsed,\n    timestamp: response.created_at,\n    method: 'HTTP Request (Ollama style)'\n  }\n};"
+      },
+      "id": "extract-http",
+      "name": "Extract HTTP Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:25808/v1/chat/completions",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gemini-2.5-flash\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.prompt }}\"\n    }\n  ],\n  \"temperature\": 0.7\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "openai-http",
+      "name": "Gemini API (OpenAI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire la réponse du format OpenAI\nconst response = $input.item.json;\n\nreturn {\n  json: {\n    prompt: $('Set Prompt').item.json.prompt,\n    response: response.choices[0].message.content,\n    model: response.model,\n    provider: response.provider,\n    keyUsed: response.keyUsed,\n    timestamp: new Date(response.created * 1000).toISOString(),\n    method: 'HTTP Request (OpenAI style)'\n  }\n};"
+      },
+      "id": "extract-openai",
+      "name": "Extract OpenAI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex"
+      },
+      "id": "merge",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Prompt": {
+      "main": [
+        [
+          {
+            "node": "Gemini API (HTTP)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gemini API (OpenAI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Extract HTTP Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API (OpenAI)": {
+      "main": [
+        [
+          {
+            "node": "Extract OpenAI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract HTTP Response": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract OpenAI Response": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-26T20:30:00.000Z",
+  "versionId": "1"
+}

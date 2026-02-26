@@ -1,0 +1,195 @@
+{
+  "name": "Gemini LangChain - Exemples Avancés",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "When clicking 'Execute Workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 500]
+    },
+    {
+      "parameters": {
+        "model": "gemini-2.5-flash",
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 2000
+        }
+      },
+      "id": "gemini-chat-model",
+      "name": "Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [680, 500],
+      "credentials": {
+        "openAiApi": {
+          "id": "gemini-local",
+          "name": "Gemini Local API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Quelle est la capitale du Sénégal? Réponds en une phrase courte."
+      },
+      "id": "example-1-simple",
+      "name": "Exemple 1: Question Simple",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.3,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Écris un haiku sur l'intelligence artificielle."
+      },
+      "id": "example-2-creative",
+      "name": "Exemple 2: Créatif",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.3,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Explique la différence entre l'IA et le Machine Learning en 3 points."
+      },
+      "id": "example-3-technical",
+      "name": "Exemple 3: Technique",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.3,
+      "position": [900, 600]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Traduis en anglais: 'Bonjour, comment allez-vous aujourd'hui?'"
+      },
+      "id": "example-4-translation",
+      "name": "Exemple 4: Traduction",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.3,
+      "position": [900, 800]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex"
+      },
+      "id": "merge-results",
+      "name": "Merge All Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1120, 500]
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute Workflow'": {
+      "main": [
+        [
+          {
+            "node": "Exemple 1: Question Simple",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Exemple 2: Créatif",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Exemple 3: Technique",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Exemple 4: Traduction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Exemple 1: Question Simple",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Exemple 2: Créatif",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Exemple 3: Technique",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Exemple 4: Traduction",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exemple 1: Question Simple": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exemple 2: Créatif": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Exemple 3: Technique": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exemple 4: Traduction": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-26T21:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,232 @@
+{
+  "name": "AionUi Multi-Provider Gemini Integration",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## AionUi Multi-Provider Gemini Integration\n\nCe workflow démontre comment utiliser l'API AionUi avec rotation automatique des clés Gemini.\n\n### Configuration requise:\n1. Serveur AionUi démarré: `npm run server`\n2. Clés API configurées dans .env\n3. URL de base: http://localhost:25808\n\n### Providers disponibles:\n- gemini_api_key_rotative (recommandé)\n- gemini_cli (nécessite OAuth)\n- kiro_cli (à venir)",
+        "height": 464.79166666666663,
+        "width": 567.3958333333333
+      },
+      "id": "1",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "prompt",
+              "value": "Écris un haiku sur l'intelligence artificielle"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Input Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        860,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25808/api/gemini_api_key_rotative/chat",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.prompt }}\"\n    }\n  ],\n  \"stream\": false,\n  \"options\": {\n    \"temperature\": 0.7,\n    \"max_tokens\": 1000\n  }\n}",
+        "options": {}
+      },
+      "id": "3",
+      "name": "Gemini API Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire la réponse de Gemini\nconst response = $input.item.json;\n\nreturn {\n  json: {\n    prompt: items[0].json.prompt,\n    response: response.message.content,\n    model: response.model,\n    provider: response.provider,\n    timestamp: response.created_at\n  }\n};"
+      },
+      "id": "4",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25808/api/gemini_api_key_rotative/generate",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"prompt\": \"{{ $json.prompt }}\",\n  \"stream\": false,\n  \"options\": {\n    \"temperature\": 0.9\n  }\n}",
+        "options": {}
+      },
+      "id": "5",
+      "name": "Gemini API Generate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire la réponse de génération\nconst response = $input.item.json;\n\nreturn {\n  json: {\n    prompt: items[0].json.prompt,\n    response: response.response,\n    model: response.model,\n    provider: response.provider,\n    timestamp: response.created_at\n  }\n};"
+      },
+      "id": "6",
+      "name": "Format Generate Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25808/api/gemini_api_key_rotative/stats",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "7",
+      "name": "Get API Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25808/api/providers",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "8",
+      "name": "List Providers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        860,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Exemple 1: Chat\nUtilise l'endpoint /chat pour une conversation",
+        "height": 80,
+        "width": 200
+      },
+      "id": "9",
+      "name": "Note Chat",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Exemple 2: Generate\nUtilise l'endpoint /generate pour une complétion simple",
+        "height": 80,
+        "width": 200
+      },
+      "id": "10",
+      "name": "Note Generate",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Monitoring\nVérifier les stats et providers disponibles",
+        "height": 80,
+        "width": 200
+      },
+      "id": "11",
+      "name": "Note Monitoring",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        820,
+        680
+      ]
+    }
+  ],
+  "connections": {
+    "Input Data": {
+      "main": [
+        [
+          {
+            "node": "Gemini API Chat",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gemini API Generate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API Chat": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API Generate": {
+      "main": [
+        [
+          {
+            "node": "Format Generate Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Providers": {
+      "main": [
+        [
+          {
+            "node": "Get API Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

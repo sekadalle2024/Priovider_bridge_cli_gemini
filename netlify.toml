@@ -1,16 +1,71 @@
-# Configuration Netlify pour AionUI
-# Netlify configuration for AionUI
+# Configuration Netlify pour AionUI Multi-Provider
+# Netlify configuration for AionUI Multi-Provider
 
 [build]
-  command = "npm run build"
+  command = "npm run build && npm run build:multi-provider"
   publish = "dist"
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "22"
 
-# Redirections pour les fonctions serverless
-# Redirects for serverless functions
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@google/genai", "better-sqlite3", "sharp"]
+
+# Redirections pour les fonctions serverless multi-provider
+# Redirects for multi-provider serverless functions
+
+# Gemini CLI endpoints
+[[redirects]]
+  from = "/api/gemini_cli/chat"
+  to = "/.netlify/functions/gemini-cli-chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/gemini_cli/generate"
+  to = "/.netlify/functions/gemini-cli-generate"
+  status = 200
+
+# Gemini API Key Rotative endpoints
+[[redirects]]
+  from = "/api/gemini_api_key_rotative/chat"
+  to = "/.netlify/functions/gemini-api-key-chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/gemini_api_key_rotative/generate"
+  to = "/.netlify/functions/gemini-api-key-generate"
+  status = 200
+
+[[redirects]]
+  from = "/api/gemini_api_key_rotative/stats"
+  to = "/.netlify/functions/gemini-api-key-stats"
+  status = 200
+
+# Kiro CLI endpoints (à venir)
+[[redirects]]
+  from = "/api/kiro_cli/*"
+  to = "/.netlify/functions/kiro-cli"
+  status = 501
+
+# Common endpoints
+[[redirects]]
+  from = "/api/providers"
+  to = "/.netlify/functions/providers"
+  status = 200
+
+[[redirects]]
+  from = "/api/version"
+  to = "/.netlify/functions/version"
+  status = 200
+
+[[redirects]]
+  from = "/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+# Legacy endpoints (compatibilité)
 [[redirects]]
   from = "/api/chat"
   to = "/.netlify/functions/gemini-chat"
@@ -23,6 +78,14 @@
 
 # Variables d'environnement (à configurer dans Netlify UI)
 # Environment variables (configure in Netlify UI):
-# - GEMINI_API_KEY: Votre clé API Gemini
-# - GEMINI_MODEL: Modèle à utiliser (défaut: gemini-2.0-flash-exp)
-# - GOOGLE_GEMINI_BASE_URL: URL de base (optionnel)
+#
+# Gemini API Keys (rotation automatique):
+# - GEMINI_API_KEY_OHADA_FINANCE_A=AIzaSy...
+# - GEMINI_API_KEY_OHADA_FINANCE_B=AIzaSy...
+# - GEMINI_API_KEY_OHADA_SAVE_A=AIzaSy...
+# ... (ajoutez toutes vos clés)
+#
+# Configuration:
+# - GEMINI_MODEL=gemini-2.0-flash-exp
+# - GOOGLE_GEMINI_BASE_URL= (optionnel)
+

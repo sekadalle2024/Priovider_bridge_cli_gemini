@@ -66,7 +66,7 @@ app.use(cors({
   }
 }));
 
-// Routes de l'API Gemini
+// Routes de l'API Gemini (avec support multi-provider intégré)
 const geminiApiRoutes = require('./dist/gemini-api-routes');
 app.use('/api', geminiApiRoutes);
 
@@ -93,14 +93,41 @@ app.get('/health', (req, res) => {
 // Route racine
 app.get('/', (req, res) => {
   res.json({
-    name: 'Gemini CLI API Server',
+    name: 'AionUi Multi-Provider API Server',
     version: '1.9.0',
-    endpoints: {
-      chat: 'POST /api/chat',
-      generate: 'POST /api/generate',
+    providers: {
+      gemini_cli: {
+        description: 'Gemini CLI with Google OAuth',
+        endpoints: {
+          chat: 'POST /api/gemini_cli/chat',
+          generate: 'POST /api/gemini_cli/generate',
+        }
+      },
+      gemini_api_key_rotative: {
+        description: 'Gemini API with automatic key rotation',
+        endpoints: {
+          chat: 'POST /api/gemini_api_key_rotative/chat',
+          generate: 'POST /api/gemini_api_key_rotative/generate',
+          stats: 'GET /api/gemini_api_key_rotative/stats',
+        }
+      },
+      kiro_cli: {
+        description: 'Kiro CLI (coming soon)',
+        endpoints: {
+          chat: 'POST /api/kiro_cli/chat',
+          generate: 'POST /api/kiro_cli/generate',
+        }
+      }
+    },
+    common_endpoints: {
+      providers: 'GET /api/providers',
       tags: 'GET /api/tags',
       version: 'GET /api/version',
       health: 'GET /health',
+    },
+    legacy_endpoints: {
+      chat: 'POST /api/chat (uses Gemini CLI)',
+      generate: 'POST /api/generate (uses Gemini CLI)',
     },
     documentation: {
       interactive: `http://localhost:${PORT}/docs`,
@@ -121,7 +148,7 @@ app.use((err, req, res, next) => {
 // Démarrer le serveur
 const server = app.listen(PORT, HOST, () => {
   console.log('\n' + '='.repeat(70));
-  console.log('🚀 Gemini CLI API Server Started!');
+  console.log('🚀 AionUi Multi-Provider API Server Started!');
   console.log('='.repeat(70));
   console.log(`\n📍 Server listening on:`);
   console.log(`   Local:   http://localhost:${PORT}`);
@@ -139,9 +166,20 @@ const server = app.listen(PORT, HOST, () => {
     }
   }
   
-  console.log(`\n🔗 API Endpoints:`);
-  console.log(`   POST http://localhost:${PORT}/api/chat`);
-  console.log(`   POST http://localhost:${PORT}/api/generate`);
+  console.log(`\n🤖 Available Providers:`);
+  console.log(`   1. Gemini CLI (Google OAuth)`);
+  console.log(`      - POST /api/gemini_cli/chat`);
+  console.log(`      - POST /api/gemini_cli/generate`);
+  console.log(`   2. Gemini API Key Rotative (${process.env.GEMINI_API_KEY_OHADA_FINANCE_A ? '✓' : '✗'} Configured)`);
+  console.log(`      - POST /api/gemini_api_key_rotative/chat`);
+  console.log(`      - POST /api/gemini_api_key_rotative/generate`);
+  console.log(`      - GET  /api/gemini_api_key_rotative/stats`);
+  console.log(`   3. Kiro CLI (Coming Soon)`);
+  console.log(`      - POST /api/kiro_cli/chat`);
+  console.log(`      - POST /api/kiro_cli/generate`);
+  
+  console.log(`\n🔗 Common Endpoints:`);
+  console.log(`   GET  http://localhost:${PORT}/api/providers`);
   console.log(`   GET  http://localhost:${PORT}/api/tags`);
   console.log(`   GET  http://localhost:${PORT}/api/version`);
   console.log(`   GET  http://localhost:${PORT}/health`);
@@ -149,12 +187,14 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`\n⚙️  Configuration:`);
   console.log(`   Port: ${PORT}`);
   console.log(`   Remote Access: ${ALLOW_REMOTE ? 'Enabled' : 'Disabled'}`);
-  console.log(`   Model: ${process.env.GEMINI_MODEL || 'gemini-2.5-flash'}`);
-  console.log(`   API Key: ${process.env.GEMINI_API_KEY ? '✓ Set' : '✗ Not set (using OAuth)'}`);
+  console.log(`   Model: ${process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp'}`);
+  console.log(`   Gemini CLI OAuth: ${fs.existsSync(path.join(os.homedir(), '.gemini', 'oauth_creds.json')) ? '✓' : '✗'}`);
+  console.log(`   API Keys Loaded: ${Object.keys(process.env).filter(k => k.startsWith('GEMINI_API_KEY_')).length}`);
   
   console.log(`\n💡 Tips:`);
   console.log(`   - Documentation: http://localhost:${PORT}/docs`);
   console.log(`   - OpenAPI Spec: http://localhost:${PORT}/openapi.json`);
+  console.log(`   - Providers List: http://localhost:${PORT}/api/providers`);
   console.log(`   - Test: curl http://localhost:${PORT}/api/version`);
   console.log(`   - Docs: See src/webserver/gemini-api-docs/README.md`);
   console.log(`   - Stop: Press Ctrl+C`);
