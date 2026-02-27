@@ -6,8 +6,9 @@ Documentation complète pour le serveur Gemini API Key avec rotation automatique
 
 Ce dossier contient toute la documentation pour:
 - **Serveur standalone** avec rotation de 27 clés API Gemini
-- **Intégration n8n** (HTTP Request et LangChain)
-- **Endpoints OpenAI compatibles** pour LLM Chain
+- **7 modèles Gemini** incluant les nouveaux Gemini 3 Flash et 3 Pro
+- **Intégration n8n** via endpoints OpenAI compatibles (`/v1`)
+- **Rotation automatique** des clés API (135 req/min)
 - **Workflows prêts à l'emploi**
 
 ## 📁 Structure du dossier
@@ -52,20 +53,23 @@ gemini-api-key-rotative-docs/
 
 ## 🚀 Démarrage rapide
 
-### Pour HTTP Request (Ollama style)
+### Configuration n8n (OpenAI Compatible)
 
-**Lire:** [N8N_QUICK_SETUP.md](N8N_QUICK_SETUP.md)
+**Base URL:** `http://127.0.0.1:25808/v1`  
+**API Key:** `dummy` (n'importe quelle valeur)
 
-**URL:** `http://127.0.0.1:25808/api/chat`
+**Modèles disponibles:**
+- `gemini-3-flash` ⭐ (nouveau, recommandé)
+- `gemini-3-pro` ⭐ (nouveau, plus puissant)
+- `gemini-2.5-flash`
+- `gemini-2.5-pro`
+- `gemini-1.5-flash`
+- `gemini-1.5-pro`
+- `gemini-exp-1206`
 
-### Pour LangChain (OpenAI Chat Model)
-
-**Lire:** [N8N_LANGCHAIN_QUICK_START.md](N8N_LANGCHAIN_QUICK_START.md)
-
-**Configuration:**
-- API Key: `dummy-key`
-- Base URL: `http://127.0.0.1:25808/v1`
-- Model: `gemini-2.5-flash`
+**Endpoints:**
+- `GET /v1/models` - Liste des modèles
+- `POST /v1/chat/completions` - Chat avec vraie API Gemini
 
 ## 📖 Documentation par besoin
 
@@ -96,44 +100,56 @@ gemini-api-key-rotative-docs/
 
 ## 🔧 Serveur
 
-**Fichier principal:** `server-api-key.js` (racine du projet)
+**Fichier principal:** `server-simple.js` (racine du projet)
 
 **Démarrage:**
 ```bash
-node server-api-key.js
+node server-simple.js
 ```
 
 **Endpoints disponibles:**
-- `POST /api/chat` - Ollama compatible
-- `POST /api/generate` - Génération simple
-- `POST /v1/chat/completions` - OpenAI compatible (LangChain)
-- `GET /v1/models` - Liste des modèles
-- `GET /api/stats` - Statistiques de rotation
+- `GET /v1/models` - Liste des 7 modèles Gemini
+- `POST /v1/chat/completions` - Chat avec vraie API Gemini + rotation automatique
+- `GET /api/providers` - Informations sur les providers
 - `GET /health` - Health check
-- `GET /docs` - Documentation Swagger
+- `GET /` - Page d'accueil avec documentation
+
+**Architecture:**
+- `server-simple.js` - Serveur Express principal
+- `gemini-api-client.js` - Client API avec rotation des 27 clés
 
 ## 📊 Configuration
 
 **Clés API:** 27 clés configurées dans `.env`
-- 8 clés Ohada Finance
-- 8 clés Ohada Save
-- 11 clés Ohada Save 2
+- 8 clés Ohada Finance (A-H)
+- 8 clés Ohada Save (A-H)
+- 11 clés Ohada Save 2 (A-K)
 
-**Capacité:** 135 requêtes/minute (27 × 5)
+**Capacité:** 135 requêtes/minute (27 × 5 req/min)
 
-**Modèles disponibles:**
-- `gemini-2.5-flash` (recommandé)
+**Modèles disponibles (7):**
+- `gemini-3-flash` ⭐ (nouveau, recommandé)
+- `gemini-3-pro` ⭐ (nouveau, plus puissant)
+- `gemini-2.5-flash`
+- `gemini-2.5-pro`
 - `gemini-1.5-flash`
 - `gemini-1.5-pro`
+- `gemini-exp-1206`
+
+**Rotation automatique:**
+- Chaque requête utilise la clé suivante
+- Logs affichent quelle clé est utilisée
+- Stats disponibles via les réponses API
 
 ## ✅ État du projet
 
 **Status:** ✅ PRODUCTION READY
 
-**Serveur:** http://0.0.0.0:25808  
-**Provider:** gemini_api_key_rotative  
-**Clés:** 27/27  
-**Rotation:** Automatique
+**Serveur:** http://localhost:25808  
+**Base URL n8n:** `http://127.0.0.1:25808/v1`  
+**Clés API:** 27/27 actives  
+**Modèles:** 7 disponibles  
+**Rotation:** Automatique avec logs
 
 ## 📝 Rapport complet
 
@@ -142,10 +158,34 @@ Pour un rapport détaillé de tout ce qui a été fait:
 
 ## 🔗 Liens utiles
 
-**Documentation Swagger:** http://localhost:25808/docs  
-**OpenAPI Spec:** http://localhost:25808/openapi.json  
+**Page d'accueil:** http://localhost:25808  
 **Health Check:** http://localhost:25808/health  
-**Stats:** http://localhost:25808/api/stats
+**Liste des modèles:** http://localhost:25808/v1/models  
+**Providers:** http://localhost:25808/api/providers
+
+## 🧪 Tests rapides
+
+**Tester la liste des modèles:**
+```bash
+curl http://127.0.0.1:25808/v1/models
+```
+
+**Tester le chat:**
+```bash
+curl -X POST http://127.0.0.1:25808/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-3-flash",
+    "messages": [{"role": "user", "content": "Bonjour"}]
+  }'
+```
+
+**Tester dans n8n:**
+1. Créer un nœud "OpenAI Chat Model"
+2. Base URL: `http://127.0.0.1:25808/v1`
+3. API Key: `dummy`
+4. Model: `gemini-3-flash`
+5. Exécuter
 
 ## 📚 Index complet
 
