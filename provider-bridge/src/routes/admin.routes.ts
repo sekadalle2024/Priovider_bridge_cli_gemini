@@ -95,7 +95,8 @@ router.get('/stats', (req: Request, res: Response) => {
  * GET /api/admin/stats/:userId — Per-user statistics
  */
 router.get('/stats/:userId', (req: Request, res: Response) => {
-    const userId = req.params.userId as string;
+    const rawUserId = req.params.userId;
+    const userId = Array.isArray(rawUserId) ? rawUserId[0] : String(rawUserId);
     const db = getDb();
 
     const user = db.prepare('SELECT id, email, display_name FROM users WHERE id = ?').get(userId) as { id: string; email: string; display_name: string } | undefined;
