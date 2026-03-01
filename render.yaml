@@ -1,0 +1,53 @@
+# Configuration Render pour le serveur des assistants
+# https://render.com/docs/blueprint-spec
+
+services:
+  # Serveur des Assistants avec Gemini CLI
+  - type: web
+    name: aionui-assistants
+    env: docker
+    dockerfilePath: ./Dockerfile.assistants
+    plan: starter  # $7/mois - ou 'free' pour le tier gratuit
+    region: oregon  # ou 'frankfurt' pour l'Europe
+    
+    # Variables d'environnement
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: ASSISTANT_PORT
+        value: 10000
+      
+      - key: GEMINI_DEFAULT_MODEL
+        value: auto
+      
+      - key: ASSISTANTS_PATH
+        value: /app/assistant
+      
+      - key: ASSISTANTS_ENABLED
+        value: true
+      
+      # OAuth Credentials (à configurer dans Render Dashboard)
+      # Copiez le contenu de ~/.gemini/oauth_creds.json
+      - key: GEMINI_OAUTH_CREDS
+        sync: false  # Secret - à définir manuellement
+      
+      # Modèles disponibles
+      - key: GEMINI_AVAILABLE_MODELS
+        value: auto,pro,flash,flash-lite,gemini-3-flash,gemini-3-pro,gemini-2.5-flash,gemini-2.5-pro,gemini-2.5-flash-lite,gemini-2.0-flash,gemini-1.5-flash,gemini-1.5-pro,gemini-exp-1206
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Auto-deploy depuis Git
+    autoDeploy: true
+    
+    # Domaine personnalisé (optionnel)
+    # domains:
+    #   - assistants.votre-domaine.com
+
+# Disques persistants (optionnel - pour les logs)
+# disks:
+#   - name: assistants-data
+#     mountPath: /data
+#     sizeGB: 1

@@ -1,0 +1,50 @@
+# Fichiers à ignorer lors du build Docker
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.log
+
+# Tests
+coverage/
+.nyc_output/
+
+# Documentation (sauf assistant/)
+*.md
+!assistant/**/*.md
+
+# Provider bridge (pas nécessaire pour les assistants)
+provider-bridge/
+
+# Netlify
+netlify/
+.netlify/
+
+# Autres projets
+src/webserver/

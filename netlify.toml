@@ -65,6 +65,27 @@
   to = "/.netlify/functions/health"
   status = 200
 
+# Assistants endpoints (API Keys Gemini - déployable sur Netlify)
+[[redirects]]
+  from = "/assistants/v1/chat/completions"
+  to = "/.netlify/functions/assistants-chat"
+  status = 200
+
+[[redirects]]
+  from = "/assistants/v1/models"
+  to = "/.netlify/functions/assistants-models"
+  status = 200
+
+[[redirects]]
+  from = "/assistants/v1/assistants"
+  to = "/.netlify/functions/assistants-list"
+  status = 200
+
+[[redirects]]
+  from = "/assistants/health"
+  to = "/.netlify/functions/assistants-health"
+  status = 200
+
 # Legacy endpoints (compatibilité)
 [[redirects]]
   from = "/api/chat"
