@@ -1,49 +1,53 @@
 {
-    "name": "provider-bridge",
-    "version": "1.0.0",
-    "description": "Provider Bridge Endpoint — Centralized API gateway for Gemini CLI, Gemini API Key Rotative, and Kiro CLI",
-    "main": "dist/server.js",
-    "engines": {
-        "node": ">=22 <25"
-    },
-    "scripts": {
-        "dev": "npx tsx watch src/server.ts",
-        "build": "npx tsc",
-        "start": "node dist/server.js",
-        "start:remote": "node dist/server.js --remote",
-        "netlify:dev": "npx netlify dev",
-        "vercel:dev": "npx vercel dev"
-    },
-    "keywords": [
-        "gemini",
-        "api",
-        "bridge",
-        "provider",
-        "kiro"
-    ],
-    "license": "Apache-2.0",
-    "dependencies": {
-        "@google/genai": "^1.16.0",
-        "bcryptjs": "^2.4.3",
-        "better-sqlite3": "^12.6.2",
-        "cookie-parser": "^1.4.7",
-        "cors": "^2.8.5",
-        "dotenv": "^16.4.7",
-        "express": "^5.1.0",
-        "jsonwebtoken": "^9.0.2",
-        "swagger-ui-express": "^5.0.1"
-    },
-    "devDependencies": {
-        "@types/bcryptjs": "^2.4.6",
-        "@types/better-sqlite3": "^7.6.13",
-        "@types/cookie-parser": "^1.4.9",
-        "@types/cors": "^2.8.19",
-        "@types/express": "^5.0.0",
-        "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^24.3.1",
-        "@types/swagger-ui-express": "^4.1.7",
-        "netlify-cli": "^24.0.1",
-        "tsx": "^4.19.0",
-        "typescript": "^5.8.3"
-    }
+  "name": "provider-bridge",
+  "version": "1.0.0",
+  "description": "Provider Bridge Endpoint — Centralized API gateway for Gemini CLI, Gemini API Key Rotative, and Kiro CLI",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "scripts": {
+    "dev": "npx tsx watch src/server.ts",
+    "start:dev": "npx tsx src/server.ts",
+    "build": "npx tsc",
+    "start": "node dist/server.js",
+    "start:remote": "node dist/server.js --remote",
+    "test": "node scripts/test-all.js --skip-server-start",
+    "test:full": "node scripts/test-all.js",
+    "netlify:dev": "npx netlify dev",
+    "vercel:dev": "npx vercel dev"
+  },
+  "keywords": [
+    "gemini",
+    "api",
+    "bridge",
+    "provider",
+    "kiro"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@google/genai": "^1.16.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.6.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "serverless-http": "^4.0.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.3.1",
+    "@types/swagger-ui-express": "^4.1.7",
+    "netlify-cli": "^24.0.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.3"
+  }
 }

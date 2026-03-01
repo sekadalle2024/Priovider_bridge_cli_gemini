@@ -175,24 +175,30 @@ router.post('/logout', (req: Request, res: Response) => {
 /**
  * GET /api/auth/me — Get current user info
  */
-router.get('/me', requireAuth, (req: Request, res: Response) => {
-    const db = getDb();
-    const user = db.prepare('SELECT id, email, display_name, role, google_id, created_at, last_login FROM users WHERE id = ?')
-        .get(req.user!.userId) as Partial<UserRecord> | undefined;
+router.get('/me', requireAuth, async (req: Request, res: Response) => {
+    try {
+        const db = getDb();
+        const userRes = await db.query('SELECT id, email, display_name, role, google_id, created_at, last_login FROM users WHERE id = $1', [req.user!.userId]);
 
-    if (!user) {
-        res.status(404).json({ error: 'User not found' });
-        return;
+        const user = userRes.rows[0] as unknown as Partial<UserRecord> | undefined;
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        // Check if user has Google credentials
+        const credRes = await db.query('SELECT COUNT(*) as count FROM google_credentials WHERE user_id = $1 AND status = \'active\'', [req.user!.userId]);
+
+        const hasCreds = credRes.rows[0] as unknown as { count: number };
+
+        res.json({
+            ...user,
+            hasGoogleCredentials: Number(hasCreds.count) > 0,
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Failed to fetch user info' });
     }
-
-    // Check if user has Google credentials
-    const hasCreds = db.prepare('SELECT COUNT(*) as count FROM google_credentials WHERE user_id = ? AND status = \'active\'')
-        .get(req.user!.userId) as { count: number };
-
-    res.json({
-        ...user,
-        hasGoogleCredentials: hasCreds.count > 0,
-    });
 });
 
 export default router;
