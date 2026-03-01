@@ -379,7 +379,7 @@ grep GEMINI_API_KEY .env
 
 ```bash
 # Solution 1: Changer le port
-echo "PORT=25809" >> .env
+echo "PORT=25810" >> .env
 
 # Solution 2: Tuer le processus
 lsof -ti:25808 | xargs kill -9

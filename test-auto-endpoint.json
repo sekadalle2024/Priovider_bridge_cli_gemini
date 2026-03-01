@@ -1,0 +1,9 @@
+{
+  "model": "auto",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is 5+5? Answer with just the number."
+    }
+  ]
+}

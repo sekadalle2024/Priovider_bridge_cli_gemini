@@ -55,7 +55,7 @@ nano .env
 # ============================================================
 # Server Configuration
 # ============================================================
-PORT=25809
+PORT=25810
 NODE_ENV=development
 ALLOW_REMOTE=false
 
@@ -182,15 +182,15 @@ npm run dev
 🌉 Provider Bridge Endpoint — Started!
 ═══════════════════════════════════════════════════════════════════
 
-📍 Server: http://localhost:25809
+📍 Server: http://localhost:25810
 
 📚 Documentation:
-   Swagger UI:  http://localhost:25809/docs
-   OpenAPI:     http://localhost:25809/openapi.json
+   Swagger UI:  http://localhost:25810/docs
+   OpenAPI:     http://localhost:25810/openapi.json
 
 🔑 Auth:
-   Login:       POST http://localhost:25809/api/auth/login
-   Google OAuth: GET http://localhost:25809/api/auth/google
+   Login:       POST http://localhost:25810/api/auth/login
+   Google OAuth: GET http://localhost:25810/api/auth/google
 
 🤖 Providers:
    Gemini CLI:   POST /api/providers/gemini_cli/chat
@@ -198,11 +198,11 @@ npm run dev
    Kiro CLI:     POST /api/providers/kiro_cli/chat
 
 🔗 n8n / LangChain:
-   POST http://localhost:25809/v1/chat/completions
-   GET  http://localhost:25809/v1/models
+   POST http://localhost:25810/v1/chat/completions
+   GET  http://localhost:25810/v1/models
 
 🎛️ Admin Dashboard:
-   http://localhost:25809
+   http://localhost:25810
    Default: admin / admin123
 
 ═══════════════════════════════════════════════════════════════════
@@ -225,7 +225,7 @@ npm start -- --remote
 ### 1. Health check
 
 ```bash
-curl http://localhost:25809/health
+curl http://localhost:25810/health
 ```
 
 **Response :**
@@ -240,7 +240,7 @@ curl http://localhost:25809/health
 ### 2. Voir les providers disponibles
 
 ```bash
-curl http://localhost:25809/api/providers
+curl http://localhost:25810/api/providers
 ```
 
 **Response :**
@@ -273,7 +273,7 @@ curl http://localhost:25809/api/providers
 ### 3. Vérifier les statistiques des clés API
 
 ```bash
-curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
+curl http://localhost:25810/api/providers/gemini_api_key_rotative/stats
 ```
 
 **Response :**
@@ -299,7 +299,7 @@ curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
 ### 4. Tester un chat
 
 ```bash
-curl -X POST http://localhost:25809/api/providers/gemini_api_key_rotative/chat \
+curl -X POST http://localhost:25810/api/providers/gemini_api_key_rotative/chat \
   -H "Content-Type: application/json" \
   -d '{
     "messages": [
@@ -331,7 +331,7 @@ curl -X POST http://localhost:25809/api/providers/gemini_api_key_rotative/chat \
 ### Endpoint pour lister les modèles
 
 ```bash
-curl http://localhost:25809/v1/models
+curl http://localhost:25810/v1/models
 ```
 
 **Response :**
@@ -359,7 +359,7 @@ curl http://localhost:25809/v1/models
 ### Endpoint pour chat
 
 ```bash
-curl -X POST http://localhost:25809/v1/chat/completions \
+curl -X POST http://localhost:25810/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "gemini-2.5-flash",
@@ -403,7 +403,7 @@ curl -X POST http://localhost:25809/v1/chat/completions \
 ### Accès
 
 ```
-URL: http://localhost:25809
+URL: http://localhost:25810
 Username: admin
 Password: admin123
 ```
@@ -432,7 +432,7 @@ gemini
 # Follow the OAuth flow
 
 # 3. Vérifier dans Provider Bridge
-curl http://localhost:25809/api/providers
+curl http://localhost:25810/api/providers
 # gemini_cli doit avoir "available": true et "hasOAuth": true
 ```
 
@@ -445,7 +445,7 @@ curl http://localhost:25809/api/providers
 Dans n8n :
 - Créer une nouvelle **Credential** "OpenAI API"
 - **API Key** : `dummy-key` (n'importe quelle valeur)
-- **Base URL** : `http://127.0.0.1:25809/v1`
+- **Base URL** : `http://127.0.0.1:25810/v1`
 
 ### 2. Utiliser dans un workflow
 
@@ -478,7 +478,7 @@ DEBUG=provider-bridge:* npm run dev
 ### Formats des logs
 
 ```
-✅ [INFO] Server started on port 25809
+✅ [INFO] Server started on port 25810
 🔑 [KEY-ROTATION] Using key 1/40 (1/5 requests/min)
 📝 [DATABASE] User 'admin' logged in
 🚀 [CHAT] Gemini API Key Rotative - gemini-2.5-flash
@@ -538,13 +538,13 @@ grep "GEMINI_API_KEY.*=AIza" .env | wc -l
 # Doit afficher 40 (pas de "replace-with...")
 ```
 
-### Erreur : "Port 25809 already in use"
+### Erreur : "Port 25810 already in use"
 
 ```bash
 # Trouver le processus
-lsof -i :25809
+lsof -i :25810
 # ou
-netstat -tulpn | grep 25809
+netstat -tulpn | grep 25810
 
 # Tuer le processus
 kill -9 <PID>
@@ -617,10 +617,10 @@ npm start
 
 ```bash
 # Via API
-curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
+curl http://localhost:25810/api/providers/gemini_api_key_rotative/stats
 
 # Via Dashboard
-# http://localhost:25809 → Admin → Statistics
+# http://localhost:25810 → Admin → Statistics
 ```
 
 ### Sauvegarder la base de données
@@ -651,9 +651,9 @@ pg_dump provider_bridge > backup.sql
 En cas de problème :
 
 1. Consultez les logs : `tail -f server.log`
-2. Testez avec curl : `curl http://localhost:25809/health`
+2. Testez avec curl : `curl http://localhost:25810/health`
 3. Vérifiez la base de données : `psql provider_bridge`
-4. Consultez la documentation : `http://localhost:25809/docs`
+4. Consultez la documentation : `http://localhost:25810/docs`
 
 ---
 

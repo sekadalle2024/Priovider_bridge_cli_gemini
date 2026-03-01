@@ -227,7 +227,7 @@ lsof -ti:25808
 kill -9 $(lsof -ti:25808)
 
 # Ou changer le port
-echo "PORT=25809" >> .env
+echo "PORT=25810" >> .env
 ```
 
 ## 🔑 Gestion des clés API
@@ -433,3 +433,285 @@ Si une commande ne fonctionne pas:
 ---
 
 **Référence rapide créée pour AionUi Multi-Provider API v1.9.0**
+
+
+---
+
+## 🤖 Serveur des Assistants Microservices
+
+### Démarrage
+
+```bash
+# Démarrer le serveur des assistants standalone
+npm run assistants
+
+# Mode développement avec rechargement automatique
+npm run assistants:dev
+
+# Avec l'application Electron (démarre automatiquement)
+npm start
+
+# Avec le mode WebUI (démarre automatiquement)
+npm run webui
+```
+
+### Tests
+
+```bash
+# Tester l'API des assistants
+npm run test:assistants
+
+# Tests d'intégration complets
+npm run test:assistants:integration
+```
+
+### Accès aux Services
+
+#### Serveur des Assistants
+- **Page d'accueil** : http://localhost:25810
+- **Documentation Swagger** : http://localhost:25810/api-docs
+- **Health Check** : http://localhost:25810/health
+- **Liste des assistants** : http://localhost:25810/api/assistants
+
+### Endpoints Principaux
+
+#### Gemini CLI par défaut
+
+```bash
+# Chat avec Gemini CLI
+curl -X POST http://localhost:25810/api/gemini/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Bonjour!"}'
+
+# Liste des modèles disponibles
+curl http://localhost:25810/api/gemini/models
+
+# Statut de Gemini CLI
+curl http://localhost:25810/api/gemini/status
+```
+
+#### Utiliser un assistant
+
+```bash
+# Exécuter l'assistant Cowork
+curl -X POST http://localhost:25810/api/assistant/cowork \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Organise mes fichiers",
+    "context": {"workspace": "/path/to/folder"}
+  }'
+
+# Créer un diagramme avec Beautiful Mermaid
+curl -X POST http://localhost:25810/api/assistant/beautiful-mermaid \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Crée un diagramme de flux pour un processus de connexion"}'
+
+# Générer une présentation
+curl -X POST http://localhost:25810/api/assistant/pptx-generator \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Crée une présentation de 5 slides sur l'\''IA",
+    "context": {"style": "Modern Gradient"}
+  }'
+```
+
+#### Informations sur les assistants
+
+```bash
+# Liste de tous les assistants
+curl http://localhost:25810/api/assistants
+
+# Info d'un assistant spécifique
+curl http://localhost:25810/api/assistant/cowork/info
+```
+
+### Configuration
+
+Variables dans `.env` :
+
+```env
+# Activer le serveur des assistants
+ASSISTANTS_ENABLED=true
+
+# Port du serveur (défaut: 25810)
+ASSISTANT_PORT=25810
+
+# Démarrage automatique avec l'application
+ASSISTANTS_AUTO_START=true
+
+# Chemin vers le dossier des assistants
+ASSISTANTS_PATH=./assistant
+
+# Chemin vers Gemini CLI
+GEMINI_CLI_PATH=gemini
+
+# Modèle Gemini par défaut
+GEMINI_DEFAULT_MODEL=gemini-2.0-flash-exp
+```
+
+### Dépannage
+
+#### Vérifier que le serveur fonctionne
+
+```bash
+# Health check
+curl http://localhost:25810/health
+
+# Doit retourner:
+# {"status":"ok","geminiCli":"available","assistantsCount":12}
+```
+
+#### Changer le port
+
+```bash
+# Dans .env
+ASSISTANT_PORT=8080
+
+# Ou via variable d'environnement
+ASSISTANT_PORT=8080 npm run assistants
+```
+
+#### Vérifier Gemini CLI
+
+```bash
+# Vérifier l'installation
+which gemini
+
+# Tester Gemini CLI
+gemini --version
+
+# Installer si nécessaire
+npm install -g @google/generative-ai-cli
+```
+
+#### Voir les assistants disponibles
+
+```bash
+# Lister les dossiers d'assistants
+ls -la assistant/
+
+# Vérifier les fichiers .md
+ls -la assistant/*/
+
+# Compter les assistants
+ls -d assistant/*/ | wc -l
+```
+
+### Monitoring
+
+#### Statistiques en temps réel
+
+```bash
+# Health check avec watch (mise à jour toutes les 5 secondes)
+watch -n 5 'curl -s http://localhost:25810/health | jq'
+
+# Liste des assistants
+curl -s http://localhost:25810/api/assistants | jq '.assistants[] | {name, displayName, endpoint}'
+```
+
+#### Logs
+
+```bash
+# Les logs s'affichent dans le terminal où le serveur est lancé
+
+# Avec PM2
+pm2 logs aionui-assistants
+
+# Avec Docker
+docker logs -f aionui-assistants
+```
+
+### Intégration avec n8n
+
+#### Configuration du nœud HTTP Request
+
+**URL**: `http://localhost:25810/api/assistant/cowork`
+
+**Method**: POST
+
+**Headers**:
+```json
+{
+  "Content-Type": "application/json"
+}
+```
+
+**Body**:
+```json
+{
+  "prompt": "{{ $json.prompt }}",
+  "model": "gemini-2.0-flash-exp",
+  "context": {
+    "workspace": "{{ $json.workspace }}"
+  }
+}
+```
+
+### Alias utiles
+
+Ajouter dans `~/.bashrc` ou `~/.zshrc`:
+
+```bash
+# Alias pour les assistants
+alias assistants-start='npm run assistants'
+alias assistants-test='npm run test:assistants:integration'
+alias assistants-health='curl -s http://localhost:25810/health | jq'
+alias assistants-list='curl -s http://localhost:25810/api/assistants | jq'
+```
+
+### Fonction de chat rapide
+
+```bash
+# Ajouter dans ~/.bashrc ou ~/.zshrc
+assistants-chat() {
+  curl -X POST http://localhost:25810/api/gemini/chat \
+    -H "Content-Type: application/json" \
+    -d "{\"prompt\":\"$1\"}" \
+    | jq -r '.result'
+}
+
+# Utilisation:
+# assistants-chat "Bonjour, comment vas-tu?"
+```
+
+### 12 Assistants Disponibles
+
+| # | Assistant | Endpoint |
+|---|-----------|----------|
+| 1 | Cowork | `/api/assistant/cowork` |
+| 2 | PPTX Generator | `/api/assistant/pptx-generator` |
+| 3 | Beautiful Mermaid | `/api/assistant/beautiful-mermaid` |
+| 4 | PDF to PPT | `/api/assistant/pdf-to-ppt` |
+| 5 | Game 3D | `/api/assistant/game-3d` |
+| 6 | UI/UX Pro Max | `/api/assistant/ui-ux-pro-max` |
+| 7 | Planning with Files | `/api/assistant/planning-with-files` |
+| 8 | Human 3 Coach | `/api/assistant/human-3-coach` |
+| 9 | Social Job Publisher | `/api/assistant/social-job-publisher` |
+| 10 | Moltbook | `/api/assistant/moltbook` |
+| 11 | OpenClaw Setup | `/api/assistant/openclaw-setup` |
+| 12 | Story Roleplay | `/api/assistant/story-roleplay` |
+
+### Documentation Complète
+
+```bash
+# Guides disponibles
+cat GUIDE_DEMARRAGE_RAPIDE_ASSISTANTS.md
+cat INTEGRATION_ASSISTANTS_COMPLETE.md
+cat RESUME_IMPLEMENTATION_ASSISTANTS.md
+cat DEMARRAGE_ASSISTANTS.md
+```
+
+### Vérification Rapide
+
+```bash
+# Script de vérification complète
+echo "=== Vérification des Assistants ==="
+echo "Serveur: $(curl -s http://localhost:25810/health | jq -r .status)"
+echo "Gemini CLI: $(curl -s http://localhost:25810/api/gemini/status | jq -r .available)"
+echo "Assistants: $(curl -s http://localhost:25810/api/assistants | jq -r .count)"
+echo "Modèles: $(curl -s http://localhost:25810/api/gemini/models | jq -r '.models | length')"
+```
+
+---
+
+**Référence mise à jour pour AionUi avec Assistants Microservices**

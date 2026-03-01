@@ -115,7 +115,7 @@ npm install
 ### Step 3: Start
 ```bash
 npm run dev
-# Server: http://localhost:25809
+# Server: http://localhost:25810
 ```
 
 ---
@@ -196,13 +196,13 @@ All items completed and ready to verify:
 
 ### Health Check
 ```bash
-curl http://localhost:25809/health
+curl http://localhost:25810/health
 # Response: {"status":"ok","timestamp":"...","uptime":...}
 ```
 
 ### Verify API Keys Loaded
 ```bash
-curl http://localhost:25809/api/providers
+curl http://localhost:25810/api/providers
 # Response shows: "keysLoaded": 40
 ```
 
@@ -214,7 +214,7 @@ node scripts/test.js
 
 ### Manual Chat Test
 ```bash
-curl -X POST http://localhost:25809/api/providers/gemini_api_key_rotative/chat \
+curl -X POST http://localhost:25810/api/providers/gemini_api_key_rotative/chat \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"Hello"}],"model":"gemini-2.5-flash"}'
 # Returns response with keyUsed showing rotation
@@ -258,12 +258,12 @@ curl -X POST http://localhost:25809/api/providers/gemini_api_key_rotative/chat \
 
 ### 1. Run Locally
 ✅ Start server with `npm run dev`  
-✅ Access dashboard at `http://localhost:25809`  
+✅ Access dashboard at `http://localhost:25810`  
 ✅ Test endpoints with curl  
 
 ### 2. Integrate with n8n
 ✅ Create OpenAI credentials  
-✅ Base URL: `http://127.0.0.1:25809/v1`  
+✅ Base URL: `http://127.0.0.1:25810/v1`  
 ✅ Use gemini-2.5-flash model  
 ✅ Build workflows with automatic key rotation  
 
@@ -357,7 +357,7 @@ npm install
 npm run dev
 ```
 
-**Server will be at:** http://localhost:25809 🚀
+**Server will be at:** http://localhost:25810 🚀
 
 ---
 
@@ -380,7 +380,7 @@ npm run dev
 1. **Quick problems:** Check PROVIDER_BRIDGE_QUICK_START.md FAQ
 2. **Configuration:** See TASK_7_LAUNCH_GUIDE.md setup section
 3. **Troubleshooting:** See TASK_7_LAUNCH_GUIDE.md troubleshooting section
-4. **API reference:** Visit http://localhost:25809/docs (when running)
+4. **API reference:** Visit http://localhost:25810/docs (when running)
 5. **Tests:** Run `node scripts/test.js` to validate everything
 
 ---

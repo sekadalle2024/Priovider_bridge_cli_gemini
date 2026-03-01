@@ -20,6 +20,7 @@ import { setupApplicationMenu } from './utils/appMenu';
 import { startWebServer } from './webserver';
 import { SERVER_CONFIG } from './webserver/config/constants';
 import { applyZoomToWindow } from './process/utils/zoom';
+import { startAssistantsServer } from './webserver/assistants-server';
 // @ts-expect-error - electron-squirrel-startup doesn't have types
 import electronSquirrelStartup from 'electron-squirrel-startup';
 
@@ -164,6 +165,35 @@ const resolveRemoteAccess = (config: WebUIUserConfig): boolean => {
 const isWebUIMode = hasSwitch('webui');
 const isRemoteMode = hasSwitch('remote');
 const isResetPasswordMode = hasCommand('--resetpass');
+
+/**
+ * Démarre le serveur des assistants si activé dans la configuration
+ */
+async function startAssistantsServerIfEnabled(): Promise<void> {
+  try {
+    // Vérifier si le serveur des assistants est activé
+    const assistantsEnabled = parseBooleanEnv(process.env.ASSISTANTS_ENABLED) !== false;
+    const assistantsAutoStart = parseBooleanEnv(process.env.ASSISTANTS_AUTO_START) !== false;
+
+    if (!assistantsEnabled || !assistantsAutoStart) {
+      console.log('[Assistants] Server disabled or auto-start disabled');
+      return;
+    }
+
+    const assistantPort = parseInt(process.env.ASSISTANT_PORT || '25809', 10);
+    
+    await startAssistantsServer({
+      port: assistantPort,
+      assistantsPath: process.env.ASSISTANTS_PATH,
+      geminiCliPath: process.env.GEMINI_CLI_PATH,
+      defaultModel: process.env.GEMINI_DEFAULT_MODEL,
+      autoStart: true
+    });
+  } catch (error) {
+    console.error('[Assistants] Failed to start server:', error);
+    // Ne pas bloquer le démarrage de l'application si le serveur des assistants échoue
+  }
+}
 
 let mainWindow: BrowserWindow;
 
@@ -315,8 +345,14 @@ const handleAppReady = async (): Promise<void> => {
     const resolvedPort = resolveWebUIPort(userConfigInfo.config);
     const allowRemote = resolveRemoteAccess(userConfigInfo.config);
     await startWebServer(resolvedPort, allowRemote);
+    
+    // Démarrer le serveur des assistants si activé
+    await startAssistantsServerIfEnabled();
   } else {
     createWindow();
+    
+    // Démarrer le serveur des assistants si activé (mode desktop)
+    await startAssistantsServerIfEnabled();
   }
 
   // 启动时初始化ACP检测器 (skip in --resetpass mode)

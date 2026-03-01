@@ -264,7 +264,7 @@ npm run build:multi-provider
 **Solution**:
 ```bash
 # Changer le port dans .env
-echo "PORT=25809" >> .env
+echo "PORT=25810" >> .env
 
 # Ou tuer le processus existant
 lsof -ti:25808 | xargs kill -9

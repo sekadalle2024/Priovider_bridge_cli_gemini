@@ -133,7 +133,7 @@ npm install
 npm run dev
 ```
 
-Visit: http://localhost:25809
+Visit: http://localhost:25810
 
 ### Full Setup (with all steps)
 
@@ -159,9 +159,9 @@ Use **PROVIDER_BRIDGE_QUICK_START.md** for:
 node scripts/test.js
 
 # Manual testing
-curl http://localhost:25809/health
-curl http://localhost:25809/api/providers
-curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
+curl http://localhost:25810/health
+curl http://localhost:25810/api/providers
+curl http://localhost:25810/api/providers/gemini_api_key_rotative/stats
 ```
 
 ---
@@ -172,7 +172,7 @@ Before considering Task 7 complete:
 
 ### Server Launch
 - [ ] Server starts without errors
-- [ ] http://localhost:25809/health returns `{"status":"ok"}`
+- [ ] http://localhost:25810/health returns `{"status":"ok"}`
 - [ ] Console shows startup banner with correct port and URLs
 
 ### Configuration
@@ -195,7 +195,7 @@ Before considering Task 7 complete:
 - [ ] Rate limiting works (5 req/min per key)
 - [ ] Usage statistics captured
 - [ ] OpenAI-compatible endpoints work
-- [ ] Dashboard accessible at http://localhost:25809
+- [ ] Dashboard accessible at http://localhost:25810
 
 ### Testing
 - [ ] `npm run test` or `node scripts/test.js` shows all green
@@ -203,7 +203,7 @@ Before considering Task 7 complete:
 - [ ] API responses have correct format
 
 ### n8n Integration (Optional)
-- [ ] n8n can connect to `http://127.0.0.1:25809/v1`
+- [ ] n8n can connect to `http://127.0.0.1:25810/v1`
 - [ ] OpenAI Chat Model node works with dummy-key
 - [ ] Receives responses from Gemini
 
@@ -341,7 +341,7 @@ npm run test               # Run unit tests (if configured)
 ## 🔗 Integration Points
 
 ### With n8n
-- Base URL: `http://127.0.0.1:25809/v1`
+- Base URL: `http://127.0.0.1:25810/v1`
 - API Key: `dummy-key` (or any string)
 - Model: `gemini-2.5-flash` (or other available models)
 - Works with OpenAI Chat Model node
@@ -413,7 +413,7 @@ npm run test               # Run unit tests (if configured)
 
 ### Troubleshooting
 1. Check logs: `npm run dev` shows real-time output
-2. Test health: `curl http://localhost:25809/health`
+2. Test health: `curl http://localhost:25810/health`
 3. Verify config: `grep GEMINI_API_KEY .env | wc -l` (should be 40)
 4. Check database: Try connecting with connection string
 5. Review docs: See TASK_7_LAUNCH_GUIDE.md "Troubleshooting" section
@@ -422,18 +422,18 @@ npm run test               # Run unit tests (if configured)
 - Full guide: TASK_7_LAUNCH_GUIDE.md
 - Quick setup: PROVIDER_BRIDGE_QUICK_START.md
 - API docs: /docs endpoint (when running)
-- Swagger: http://localhost:25809/docs
+- Swagger: http://localhost:25810/docs
 
 ### Testing
 ```bash
 # Health check
-curl http://localhost:25809/health
+curl http://localhost:25810/health
 
 # Provider info
-curl http://localhost:25809/api/providers
+curl http://localhost:25810/api/providers
 
 # API key stats
-curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
+curl http://localhost:25810/api/providers/gemini_api_key_rotative/stats
 
 # Run full test suite
 node scripts/test.js

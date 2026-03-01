@@ -336,7 +336,7 @@ grep GEMINI_API_KEY .env
 **Solution**: Changer le port dans `.env` ou tuer le processus existant.
 
 ```bash
-echo "PORT=25809" >> .env
+echo "PORT=25810" >> .env
 # ou
 lsof -ti:25808 | xargs kill -9
 ```

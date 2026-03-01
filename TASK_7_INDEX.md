@@ -101,7 +101,7 @@
    ↓
 5. npm run dev
    ↓
-6. http://localhost:25809 ✅
+6. http://localhost:25810 ✅
 ```
 
 ### Detailed Journey
@@ -140,7 +140,7 @@
 - **Format:** `AIza_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
 
 ### Server Configuration
-- **Port:** 25809
+- **Port:** 25810
 - **Database:** PostgreSQL (or Supabase/SQLite)
 - **Auth:** JWT + Google OAuth
 - **Mode:** Development or Production
@@ -159,7 +159,7 @@ npm start -- --remote         # Network accessible
 
 # Test
 node scripts/test.js          # Run tests
-curl http://localhost:25809/health  # Quick check
+curl http://localhost:25810/health  # Quick check
 
 # Build
 npm run build                 # Compile TypeScript
@@ -230,7 +230,7 @@ npm install
 npm run dev
 ```
 
-**Server:** http://localhost:25809 ✅
+**Server:** http://localhost:25810 ✅
 
 ---
 
@@ -241,7 +241,7 @@ npm run dev
 
 ### "What are all the endpoints?"
 → **PROVIDER_BRIDGE_QUICK_START.md** → Section "API Endpoints"
-→ Or visit http://localhost:25809/docs (when running)
+→ Or visit http://localhost:25810/docs (when running)
 
 ### "How do I set up n8n?"
 → **PROVIDER_BRIDGE_QUICK_START.md** → Section "Using with n8n"
@@ -295,7 +295,7 @@ npm run dev
 
 ### After Following This Guide, You Will Have:
 
-✅ A running Provider Bridge server on `localhost:25809`  
+✅ A running Provider Bridge server on `localhost:25810`  
 ✅ 40 API keys loaded and rotating automatically  
 ✅ Ability to send chat requests via REST API  
 ✅ OpenAI-compatible endpoints for n8n integration  
@@ -321,8 +321,8 @@ npm run dev
 ### Beginner
 1. Read: PROVIDER_BRIDGE_QUICK_START.md (quick version)
 2. Do: Follow the 3-step launch
-3. Test: Run `curl http://localhost:25809/health`
-4. Explore: Visit dashboard at http://localhost:25809
+3. Test: Run `curl http://localhost:25810/health`
+4. Explore: Visit dashboard at http://localhost:25810
 
 ### Intermediate
 1. Read: TASK_7_LAUNCH_GUIDE.md (full version)
@@ -380,7 +380,7 @@ npm run dev
 3. **Test first:** Run `node scripts/test.js` before integrating with n8n
 4. **Keep secrets safe:** Never commit `.env` file to git
 5. **Check logs:** `npm run dev` shows all important messages
-6. **Use Swagger:** http://localhost:25809/docs has interactive API testing
+6. **Use Swagger:** http://localhost:25810/docs has interactive API testing
 
 ---
 

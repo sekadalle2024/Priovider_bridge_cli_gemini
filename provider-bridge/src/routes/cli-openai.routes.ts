@@ -4,10 +4,15 @@
  * Mounted at /cli in server.ts, this router exposes a complete
  * OpenAI-compatible API that routes exclusively to Gemini CLI (OAuth).
  *
- * n8n / LangChain base URL: http://127.0.0.1:25809/cli
+ * n8n / LangChain base URLs:
+ *   - http://127.0.0.1:25809/cli
+ *   - http://127.0.0.1:25809/v1/cli
  *
+ * Endpoints:
  *   GET  /cli/models              → list all available models
  *   POST /cli/chat/completions    → chat via Gemini CLI (OAuth, no API key consumed)
+ *   GET  /cli/v1/models           → alias for /cli/models
+ *   POST /cli/v1/chat/completions → alias for /cli/chat/completions
  */
 
 import { Router, type Request, type Response } from 'express';
@@ -93,6 +98,90 @@ router.get('/models', (_req: Request, res: Response) => {
  *   • Model availability depends on your Google account OAuth quota
  */
 router.post('/chat/completions', optionalAuth, async (req: Request, res: Response) => {
+  try {
+    const { messages, model } = req.body as {
+      messages?: { role: string; content: string }[];
+      model?: string;
+    };
+
+    if (!messages?.length) {
+      res.status(400).json({
+        error: {
+          message: 'messages array is required and must not be empty',
+          type: 'invalid_request_error',
+          param: 'messages',
+          code: null,
+        },
+      });
+      return;
+    }
+
+    const targetModel = model || 'gemini-2.5-pro';
+    const service = getGeminiCliService();
+
+    const result = await service.chat(messages, { model: targetModel });
+
+    if (req.user) {
+      await recordUsage({
+        userId: req.user.userId,
+        provider: 'gemini_cli',
+        model: result.model,
+      });
+    }
+
+    res.json({
+      id: `chatcmpl-cli-${Date.now()}`,
+      object: 'chat.completion',
+      created: Math.floor(Date.now() / 1000),
+      model: result.model,
+      choices: [
+        {
+          index: 0,
+          message: { role: 'assistant', content: result.text },
+          finish_reason: 'stop',
+        },
+      ],
+      usage: {
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: {
+        message: error.message,
+        type: 'api_error',
+        param: null,
+        code: null,
+      },
+    });
+  }
+});
+
+// ── v1 aliases for better OpenAI compatibility ───────────────────────────────
+
+/**
+ * GET /cli/v1/models
+ * Alias for /cli/models — some tools expect /v1/models path
+ */
+router.get('/v1/models', (_req: Request, res: Response) => {
+  const models = getModelList().map((m) => ({
+    id: m.id,
+    object: 'model',
+    created: 1677610602,
+    owned_by: 'google',
+    description: `${m.label} — Gemini CLI OAuth (no API key consumed)`,
+  }));
+
+  res.json({ object: 'list', data: models });
+});
+
+/**
+ * POST /cli/v1/chat/completions
+ * Alias for /cli/chat/completions — standard OpenAI path
+ */
+router.post('/v1/chat/completions', optionalAuth, async (req: Request, res: Response) => {
   try {
     const { messages, model } = req.body as {
       messages?: { role: string; content: string }[];

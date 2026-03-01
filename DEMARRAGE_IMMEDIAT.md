@@ -256,7 +256,7 @@ lsof -i :25808
 kill -9 $(lsof -ti:25808)
 
 # Ou changer le port
-echo "PORT=25809" >> .env
+echo "PORT=25810" >> .env
 ```
 
 ### "Cannot find module"

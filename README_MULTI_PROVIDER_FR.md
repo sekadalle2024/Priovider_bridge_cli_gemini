@@ -206,7 +206,7 @@ Attendre 1 minute (limite: 5 req/min par clé)
 
 ```bash
 # Changer le port
-echo "PORT=25809" >> .env
+echo "PORT=25810" >> .env
 ```
 
 ## 💡 Conseils

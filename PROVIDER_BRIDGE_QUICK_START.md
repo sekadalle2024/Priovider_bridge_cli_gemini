@@ -20,7 +20,7 @@ npm install
 npm run dev
 ```
 
-✅ Server running at `http://localhost:25809`
+✅ Server running at `http://localhost:25810`
 
 ---
 
@@ -76,7 +76,7 @@ DATABASE_PATH=./provider-bridge.db
 ### Essential Variables
 
 ```env
-PORT=25809
+PORT=25810
 NODE_ENV=development
 JWT_SECRET=your-secret-key-here-minimum-32-characters-required
 ADMIN_USERNAME=admin
@@ -113,11 +113,11 @@ npm run dev
 🌉 Provider Bridge Endpoint — Started!
 ═══════════════════════════════════════════════════════════════════
 
-📍 Server: http://localhost:25809
+📍 Server: http://localhost:25810
 
 📚 Documentation:
-   Swagger UI:  http://localhost:25809/docs
-   OpenAPI:     http://localhost:25809/openapi.json
+   Swagger UI:  http://localhost:25810/docs
+   OpenAPI:     http://localhost:25810/openapi.json
 
 🤖 Providers:
    Gemini CLI:   POST /api/providers/gemini_cli/chat
@@ -125,11 +125,11 @@ npm run dev
    Kiro CLI:     POST /api/providers/kiro_cli/chat
 
 🔗 n8n / LangChain:
-   POST http://localhost:25809/v1/chat/completions
-   GET  http://localhost:25809/v1/models
+   POST http://localhost:25810/v1/chat/completions
+   GET  http://localhost:25810/v1/models
 
 🎛️  Admin Dashboard:
-   http://localhost:25809
+   http://localhost:25810
    Default: admin / admin123
 ```
 
@@ -153,7 +153,7 @@ npm start -- --remote
 ### Health Check
 
 ```bash
-curl http://localhost:25809/health
+curl http://localhost:25810/health
 ```
 
 **Response:**
@@ -168,13 +168,13 @@ curl http://localhost:25809/health
 ### List Providers
 
 ```bash
-curl http://localhost:25809/api/providers
+curl http://localhost:25810/api/providers
 ```
 
 ### Check API Keys
 
 ```bash
-curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
+curl http://localhost:25810/api/providers/gemini_api_key_rotative/stats
 ```
 
 **Response shows:**
@@ -185,7 +185,7 @@ curl http://localhost:25809/api/providers/gemini_api_key_rotative/stats
 ### Test Chat
 
 ```bash
-curl -X POST http://localhost:25809/api/providers/gemini_api_key_rotative/chat \
+curl -X POST http://localhost:25810/api/providers/gemini_api_key_rotative/chat \
   -H "Content-Type: application/json" \
   -d '{
     "messages": [{"role": "user", "content": "Hello!"}],
@@ -202,7 +202,7 @@ curl -X POST http://localhost:25809/api/providers/gemini_api_key_rotative/chat \
 In n8n:
 - Type: **OpenAI API**
 - API Key: `dummy-key`
-- Base URL: `http://127.0.0.1:25809/v1`
+- Base URL: `http://127.0.0.1:25810/v1`
 
 ### 2. Add OpenAI Chat Model Node
 
@@ -264,7 +264,7 @@ GET    /api/auth/google
 
 ## 🎛️ Dashboard Admin
 
-**Access:** http://localhost:25809
+**Access:** http://localhost:25810
 
 **Default Credentials:**
 - Username: `admin`
@@ -290,16 +290,16 @@ Or manually:
 
 ```bash
 # Health
-curl http://localhost:25809/health
+curl http://localhost:25810/health
 
 # Providers
-curl http://localhost:25809/api/providers
+curl http://localhost:25810/api/providers
 
 # Models
-curl http://localhost:25809/v1/models
+curl http://localhost:25810/v1/models
 
 # Chat
-curl -X POST http://localhost:25809/v1/chat/completions \
+curl -X POST http://localhost:25810/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{"model":"gemini-2.5-flash","messages":[{"role":"user","content":"Hello"}]}'
 ```
@@ -324,11 +324,11 @@ brew services start postgresql@15
 sudo service postgresql start
 ```
 
-### Error: "Port 25809 already in use"
+### Error: "Port 25810 already in use"
 
 ```bash
 # Find process using the port
-lsof -i :25809
+lsof -i :25810
 
 # Kill it
 kill -9 <PID>
@@ -441,7 +441,7 @@ npx vercel --prod
 
 ```bash
 docker build -t provider-bridge:latest .
-docker run -p 25809:25809 \
+docker run -p 25810:25810 \
   -e DATABASE_URL=postgresql://... \
   -e GEMINI_API_KEY_1=... \
   # ... (add all 40 keys)
@@ -476,8 +476,8 @@ docker run -p 25809:25809 \
 Having issues? Check:
 
 1. **Logs:** `npm run dev` shows real-time logs
-2. **Docs:** http://localhost:25809/docs
-3. **Health:** curl http://localhost:25809/health
+2. **Docs:** http://localhost:25810/docs
+3. **Health:** curl http://localhost:25810/health
 4. **Database:** Verify connection in `.env`
 5. **API Keys:** Check they're in `.env` with correct format
 

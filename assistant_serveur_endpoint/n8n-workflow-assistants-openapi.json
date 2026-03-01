@@ -1,0 +1,279 @@
+{
+  "name": "AionUI Assistants OpenAPI - Multi-Models",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "assistant-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:25810/api/v1/chat/completions",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.prompt }}\"\n    }\n  ],\n  \"model\": \"{{ $json.model || 'gemini-3-flash' }}\",\n  \"temperature\": {{ $json.temperature || 0.7 }}\n}",
+        "options": {}
+      },
+      "id": "chat-completion",
+      "name": "Chat Completion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:25810/api/v1/models",
+        "options": {}
+      },
+      "id": "list-models",
+      "name": "List Models",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [470, 500]
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-2",
+      "name": "Manual Trigger 2",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 700]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:25810/api/v1/assistants",
+        "options": {}
+      },
+      "id": "list-assistants",
+      "name": "List Assistants",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [470, 700]
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-3",
+      "name": "Manual Trigger 3",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:25810/api/v1/assistants/beautiful-mermaid/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Crée un diagramme de flux pour un processus de connexion utilisateur\"\n    }\n  ],\n  \"model\": \"gemini-2.5-pro\"\n}",
+        "options": {}
+      },
+      "id": "assistant-mermaid",
+      "name": "Beautiful Mermaid Assistant",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [470, 900]
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-4",
+      "name": "Manual Trigger 4",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 1100]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "models",
+              "value": "=gemini-3-flash,gemini-3-pro,gemini-2.5-flash,gemini-2.5-pro,gemini-2.5-flash-lite"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-models",
+      "name": "Set Models",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [470, 1100]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "models",
+        "options": {}
+      },
+      "id": "split-models",
+      "name": "Split Models",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [690, 1100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:25810/api/v1/chat/completions",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Explique l'intelligence artificielle en une phrase\"\n    }\n  ],\n  \"model\": \"{{ $json.models }}\"\n}",
+        "options": {}
+      },
+      "id": "test-each-model",
+      "name": "Test Each Model",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [910, 1100]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "aggregate-results",
+      "name": "Aggregate Results",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [1130, 1100]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Chat Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Completion": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "List Models",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger 2": {
+      "main": [
+        [
+          {
+            "node": "List Assistants",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger 3": {
+      "main": [
+        [
+          {
+            "node": "Beautiful Mermaid Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger 4": {
+      "main": [
+        [
+          {
+            "node": "Set Models",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Models": {
+      "main": [
+        [
+          {
+            "node": "Split Models",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Models": {
+      "main": [
+        [
+          {
+            "node": "Test Each Model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Each Model": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-01T00:00:00.000Z",
+  "versionId": "1"
+}
