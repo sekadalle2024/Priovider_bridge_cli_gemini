@@ -184,11 +184,13 @@ export class AssistantService {
   }
 
   /**
-   * Exécute Gemini CLI
+   * Exécute Gemini CLI avec support des prompts longs via stdin
+   * Solution pour éviter l'erreur "La ligne de commande est trop longue" sur Windows
    */
   private async runGeminiCli(prompt: string, model: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      const args = ['--model', model, '--prompt', prompt];
+      // Utiliser stdin au lieu de --prompt pour éviter la limite de longueur de ligne de commande
+      const args = ['--model', model];
       const process = spawn(this.geminiCliPath, args);
 
       let output = '';
@@ -213,6 +215,12 @@ export class AssistantService {
       process.on('error', (error) => {
         reject(error);
       });
+
+      // Écrire le prompt dans stdin au lieu de le passer comme argument
+      if (process.stdin) {
+        process.stdin.write(prompt);
+        process.stdin.end();
+      }
     });
   }
 

@@ -165,12 +165,13 @@ class AssistantService {
 
   async runGeminiCli(prompt, model) {
     return new Promise((resolve, reject) => {
-      // Sur Windows, utiliser cmd.exe pour exécuter les fichiers .cmd
+      // Solution pour les prompts longs: utiliser stdin au lieu de -p
+      // Évite l'erreur "La ligne de commande est trop longue" sur Windows
       const isWindows = process.platform === 'win32';
       const command = isWindows ? 'cmd.exe' : this.geminiCliPath;
       const args = isWindows 
-        ? ['/c', this.geminiCliPath, '-p', prompt, '--model', model]
-        : ['-p', prompt, '--model', model];
+        ? ['/c', this.geminiCliPath, '--model', model]
+        : ['--model', model];
       
       const childProcess = spawn(command, args);
 
@@ -196,6 +197,13 @@ class AssistantService {
       childProcess.on('error', (error) => {
         reject(error);
       });
+
+      // Écrire le prompt dans stdin au lieu de le passer comme argument
+      // Cela permet de gérer des prompts de n'importe quelle longueur
+      if (childProcess.stdin) {
+        childProcess.stdin.write(prompt);
+        childProcess.stdin.end();
+      }
     });
   }
 

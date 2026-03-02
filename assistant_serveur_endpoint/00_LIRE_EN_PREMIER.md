@@ -201,6 +201,14 @@ gemini --version
 
 Sans Gemini CLI, le serveur démarre mais retournera une erreur 503 lors des requêtes.
 
+## 🔧 Solution pour les Prompts Longs
+
+Si vous utilisez des prompts très longs (>8000 caractères) et rencontrez l'erreur "La ligne de commande est trop longue", consultez:
+
+**[CORRECTION_PROMPTS_LONGS_COMPLETE.md](../CORRECTION_PROMPTS_LONGS_COMPLETE.md)** ⭐
+
+La solution a été implémentée et utilise stdin au lieu d'arguments de ligne de commande.
+
 ## 📝 Exemple n8n Rapide
 
 **URL** : `http://localhost:25810/api/v1/chat/completions`
