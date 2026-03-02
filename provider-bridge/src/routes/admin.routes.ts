@@ -38,6 +38,82 @@ router.get('/users', async (req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/admin/accounts — List all Google accounts (alias for users)
+ */
+router.get('/accounts', async (req: Request, res: Response) => {
+    try {
+        const db = getDb();
+
+        const result = await db.query(`
+        SELECT u.id, u.email, u.display_name as name, u.google_id, u.created_at, u.last_login as lastUsed,
+               (SELECT COUNT(*) FROM google_credentials gc WHERE gc.user_id = u.id AND gc.status = 'active') > 0 as geminiCliEnabled,
+               (SELECT COALESCE(SUM(request_count), 0) FROM usage_stats us WHERE us.user_id = u.id) as requestCount,
+               CASE WHEN u.last_login > NOW() - INTERVAL '7 days' THEN 'active' ELSE 'inactive' END as status
+        FROM users u
+        WHERE u.google_id IS NOT NULL
+        ORDER BY u.created_at DESC
+        `);
+
+        res.json(result.rows);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Failed to list accounts' });
+    }
+});
+
+/**
+ * GET /api/admin/usage — Usage statistics per account
+ */
+router.get('/usage', async (req: Request, res: Response) => {
+    try {
+        const db = getDb();
+
+        const result = await db.query(`
+        SELECT u.email, us.model, us.request_count as requests, 
+               us.tokens_used as tokensUsed, us.token_limit as tokenLimit
+        FROM usage_stats us
+        JOIN users u ON u.id = us.user_id
+        ORDER BY us.tokens_used DESC
+        LIMIT 100
+        `);
+
+        res.json(result.rows);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Failed to fetch usage stats' });
+    }
+});
+
+/**
+ * DELETE /api/admin/accounts/:id — Remove an account (alias for users)
+ */
+router.delete('/accounts/:id', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const db = getDb();
+
+        // Prevent deleting yourself
+        if (id === req.user!.userId) {
+            res.status(400).json({ error: 'Cannot delete your own account' });
+            return;
+        }
+
+        const userRes = await db.query('SELECT id, role FROM users WHERE id = $1', [id as string]);
+        const user = userRes.rows[0] as unknown as { id: string; role: string } | undefined;
+        
+        if (!user) {
+            res.status(404).json({ error: 'Account not found' });
+            return;
+        }
+
+        // Cascade delete handles credentials, stats, sessions
+        await db.query('DELETE FROM users WHERE id = $1', [id as string]);
+
+        res.json({ success: true, message: `Account ${id} deleted` });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Failed to delete account' });
+    }
+});
+
+/**
  * DELETE /api/admin/users/:id — Remove a user and revoke credentials
  */
 router.delete('/users/:id', async (req: Request, res: Response) => {
@@ -98,10 +174,36 @@ router.put('/users/:id/status', async (req: Request, res: Response) => {
  */
 router.get('/stats', async (req: Request, res: Response) => {
     try {
+        const db = getDb();
+        
+        // Total accounts
+        const accountsRes = await db.query('SELECT COUNT(*) as count FROM users WHERE google_id IS NOT NULL');
+        const totalAccounts = (accountsRes.rows[0] as { count: number }).count;
+        
+        // Active models
+        const modelsRes = await db.query('SELECT COUNT(DISTINCT model) as count FROM usage_stats');
+        const activeModels = (modelsRes.rows[0] as { count: number }).count;
+        
+        // Requests in last 24h
+        const requestsRes = await db.query(`
+            SELECT COALESCE(SUM(request_count), 0) as count 
+            FROM usage_stats 
+            WHERE updated_at > NOW() - INTERVAL '24 hours'
+        `);
+        const requests24h = (requestsRes.rows[0] as { count: number }).count;
+        
+        // API Keys count
+        const keysRes = await db.query('SELECT COUNT(*) as count FROM google_credentials WHERE status = \'active\'');
+        const apiKeys = (keysRes.rows[0] as { count: number }).count;
+        
         const stats = await getAggregatedStats();
         const keyRotation = getApiKeyRotationService().getStats();
 
         res.json({
+            totalAccounts,
+            activeModels,
+            requests24h,
+            apiKeys,
             ...stats,
             apiKeyRotation: keyRotation,
         });

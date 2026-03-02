@@ -1,31 +1,121 @@
+# Configuration Netlify pour Provider Bridge
+# Netlify configuration for Provider Bridge
+
 [build]
   command = "npm run build"
   publish = "public"
   functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
 [functions]
-  included_files = ["dist/**"]
+  node_bundler = "esbuild"
+  external_node_modules = ["@google/genai", "better-sqlite3", "sharp"]
+  included_files = ["dist/**", "provider-bridge.db"]
 
-[dev]
-  command = "npm run dev"
-  port = 25809
-  targetPort = 25809
+# ============================================================
+# Redirects — Route API calls to serverless functions
+# ============================================================
 
+# Health check
+[[redirects]]
+  from = "/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+# API routes — all /api/* go to main API handler
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  to = "/.netlify/functions/api"
   status = 200
 
+# OpenAI compatible endpoints
 [[redirects]]
   from = "/v1/*"
-  to = "/.netlify/functions/api/v1/:splat"
+  to = "/.netlify/functions/api"
   status = 200
 
+# CLI endpoints
+[[redirects]]
+  from = "/cli/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+# Auth endpoints (without /api prefix)
+[[redirects]]
+  from = "/auth/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+# Admin endpoints (without /api prefix)
+[[redirects]]
+  from = "/admin/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+# Swagger docs
 [[redirects]]
   from = "/docs"
-  to = "/.netlify/functions/api/docs"
+  to = "/.netlify/functions/api"
   status = 200
 
 [[redirects]]
   from = "/openapi.json"
-  to = "/.netlify/functions/api/openapi.json"
+  to = "/.netlify/functions/api"
   status = 200
+
+# SPA fallback — serve index.html for all other routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ============================================================
+# Headers — Security and CORS
+# ============================================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Credentials = "true"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Credentials = "true"
+
+# ============================================================
+# Environment Variables (configure in Netlify UI)
+# ============================================================
+#
+# Required:
+# - GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+# - GOOGLE_CLIENT_SECRET=your-client-secret
+# - GOOGLE_REDIRECT_URI=https://your-site.netlify.app/api/auth/google/callback
+# - JWT_SECRET=your-random-32-char-secret
+#
+# Optional:
+# - GEMINI_API_KEY_1=AIzaSy...
+# - GEMINI_API_KEY_2=AIzaSy...
+# - GEMINI_MODEL=gemini-2.0-flash-exp
+# - PORT=25809
+# - ALLOW_REMOTE=true
+# - NODE_ENV=production
+#
+# Database (recommended for production):
+# - DATABASE_URL=postgresql://user:pass@host:5432/dbname

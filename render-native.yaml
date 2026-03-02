@@ -1,0 +1,52 @@
+# Configuration Render pour déploiement Node.js natif (sans Docker)
+# Plus simple et plus rapide que Docker!
+
+services:
+  # Serveur des Assistants avec Gemini CLI (Node.js natif)
+  - type: web
+    name: aionui-assistants
+    env: node
+    region: oregon  # ou 'frankfurt' pour l'Europe
+    plan: starter  # $7/mois - ou 'free' pour le tier gratuit
+    
+    # Build
+    buildCommand: npm install && npm install -g @google/gemini-cli
+    startCommand: node scripts/server-assistants-standalone.js
+    
+    # Variables d'environnement
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      
+      - key: NODE_ENV
+        value: production
+      
+      - key: ASSISTANT_PORT
+        value: 10000
+      
+      - key: GEMINI_DEFAULT_MODEL
+        value: auto
+      
+      - key: ASSISTANTS_PATH
+        value: ./assistant
+      
+      - key: ASSISTANTS_ENABLED
+        value: true
+      
+      # OAuth Credentials (à configurer dans Render Dashboard)
+      # Copiez le contenu de ~/.gemini/oauth_creds.json
+      - key: GEMINI_OAUTH_ACCESS_TOKEN
+        sync: false  # Secret - à définir manuellement
+      
+      - key: GEMINI_OAUTH_REFRESH_TOKEN
+        sync: false  # Secret - à définir manuellement
+      
+      # Modèles disponibles
+      - key: GEMINI_AVAILABLE_MODELS
+        value: auto,pro,flash,flash-lite,gemini-3-flash,gemini-3-pro,gemini-2.5-flash,gemini-2.5-pro,gemini-2.5-flash-lite,gemini-2.0-flash,gemini-1.5-flash,gemini-1.5-pro,gemini-exp-1206
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Auto-deploy depuis Git
+    autoDeploy: true
