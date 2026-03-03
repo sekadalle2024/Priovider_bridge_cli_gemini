@@ -1,0 +1,398 @@
+{
+  "name": "Kiro Claude Sonnet 4.5 - Chat Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Kiro Claude Sonnet 4.5 Workflow\n\nCe workflow démontre l'utilisation de Kiro CLI avec Claude Sonnet 4.5 via l'endpoint OpenAI-compatible.\n\n### Configuration requise:\n1. Serveur AionUI démarré sur http://localhost:25810\n2. Kiro CLI installé et authentifié\n3. KIRO_CLI_ENABLED=true dans .env\n\n### Endpoints disponibles:\n- Chat: http://localhost:25810/v1/kiro-cli/chat/completions\n- Models: http://localhost:25810/v1/kiro-cli/models\n- Status: http://localhost:25810/api/kiro-cli/status",
+        "height": 464,
+        "width": 567
+      },
+      "id": "note-1",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 240],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "prompt",
+              "value": "Explique-moi les closures en JavaScript en 3 phrases."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-prompt",
+      "name": "Set Prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [460, 460],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25810/v1/kiro-cli/chat/completions",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.prompt }}\"\n    }\n  ],\n  \"stream\": false\n}",
+        "options": {}
+      },
+      "id": "http-kiro-chat",
+      "name": "Kiro Claude Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 460],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "options": {
+          "fileName": "kiro-response.json",
+          "mimeType": "application/json"
+        }
+      },
+      "id": "extract-response",
+      "name": "Extract Response",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "position": [900, 460],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25810/v1/kiro-cli/models",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-list-models",
+      "name": "List Models",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 660],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25810/api/kiro-cli/status",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "http-check-status",
+      "name": "Check Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 860],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "prompt",
+              "value": "Crée une fonction TypeScript pour valider un email"
+            },
+            {
+              "name": "language",
+              "value": "typescript"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-code-prompt",
+      "name": "Set Code Prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [460, 1060],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25810/api/kiro-cli/generate",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"{{ $json.prompt }}\",\n  \"language\": \"{{ $json.language }}\"\n}",
+        "options": {}
+      },
+      "id": "http-generate-code",
+      "name": "Generate Code",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 1060],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "prompt",
+              "value": "Compte de 1 à 5 en expliquant chaque nombre."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-streaming-prompt",
+      "name": "Set Streaming Prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [460, 1260],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25810/v1/kiro-cli/chat/completions",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.prompt }}\"\n    }\n  ],\n  \"stream\": true\n}",
+        "options": {}
+      },
+      "id": "http-streaming-chat",
+      "name": "Streaming Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 1260],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "content": "## Test 1: Chat Simple\n\nEnvoie un prompt simple à Claude Sonnet 4.5 et reçoit une réponse complète.\n\n**Modèle**: claude-sonnet-4-5\n**Stream**: false",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-test1",
+      "name": "Note Test 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 380],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Test 2: Liste des Modèles\n\nRécupère la liste de tous les modèles Claude disponibles via Kiro CLI.\n\n**Endpoint**: /v1/kiro-cli/models",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-test2",
+      "name": "Note Test 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 580],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Test 3: Vérification du Statut\n\nVérifie que le service Kiro CLI est disponible et opérationnel.\n\n**Endpoint**: /api/kiro-cli/status",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-test3",
+      "name": "Note Test 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 780],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Test 4: Génération de Code\n\nUtilise l'endpoint spécialisé pour générer du code TypeScript.\n\n**Endpoint**: /api/kiro-cli/generate\n**Language**: typescript",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-test4",
+      "name": "Note Test 4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 980],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Test 5: Chat avec Streaming\n\nDémontre le streaming de réponses en temps réel.\n\n**Modèle**: claude-sonnet-4-5\n**Stream**: true",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-test5",
+      "name": "Note Test 5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 1180],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "system_prompt",
+              "value": "Tu es un expert en JavaScript et TypeScript."
+            },
+            {
+              "name": "user_prompt",
+              "value": "Explique la différence entre let, const et var."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-system-prompt",
+      "name": "Set System Prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [460, 1460],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:25810/v1/kiro-cli/chat/completions",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"{{ $json.system_prompt }}\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.user_prompt }}\"\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 1000\n}",
+        "options": {}
+      },
+      "id": "http-system-prompt",
+      "name": "Chat with System Prompt",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [680, 1460],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "content": "## Test 6: System Prompt\n\nUtilise un system prompt pour définir le comportement de l'assistant.\n\n**Temperature**: 0.7\n**Max Tokens**: 1000",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-test6",
+      "name": "Note Test 6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [240, 1380],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Set Prompt": {
+      "main": [
+        [
+          {
+            "node": "Kiro Claude Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiro Claude Chat": {
+      "main": [
+        [
+          {
+            "node": "Extract Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Code Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Streaming Prompt": {
+      "main": [
+        [
+          {
+            "node": "Streaming Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set System Prompt": {
+      "main": [
+        [
+          {
+            "node": "Chat with System Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2026-03-02T00:00:00.000Z",
+      "updatedAt": "2026-03-02T00:00:00.000Z",
+      "id": "1",
+      "name": "Kiro CLI"
+    },
+    {
+      "createdAt": "2026-03-02T00:00:00.000Z",
+      "updatedAt": "2026-03-02T00:00:00.000Z",
+      "id": "2",
+      "name": "Claude"
+    },
+    {
+      "createdAt": "2026-03-02T00:00:00.000Z",
+      "updatedAt": "2026-03-02T00:00:00.000Z",
+      "id": "3",
+      "name": "OpenAI Compatible"
+    }
+  ],
+  "pinData": {},
+  "versionId": "1"
+}

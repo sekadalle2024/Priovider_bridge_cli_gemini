@@ -6,6 +6,7 @@ export interface KiroCliConfig {
   workspace: string;
   model?: string;
   timeout?: number;
+  availableModels?: string[];
 }
 
 export interface KiroChatMessage {
@@ -46,6 +47,13 @@ export class KiroCliService extends EventEmitter {
     super();
     this.config = {
       timeout: 300000, // 5 minutes par défaut
+      model: 'claude-sonnet-4-5',
+      availableModels: [
+        'claude-sonnet-4-5',
+        'claude-opus-4-5',
+        'claude-sonnet-3-5',
+        'claude-haiku-3-5'
+      ],
       ...config
     };
     this.sessionId = this.generateSessionId();
@@ -300,6 +308,30 @@ export class KiroCliService extends EventEmitter {
   private estimateTokens(text: string): number {
     // Approximation: ~4 caractères par token
     return Math.ceil(text.length / 4);
+  }
+
+  /**
+   * Obtient la liste des modèles disponibles
+   */
+  getAvailableModels(): Array<{
+    id: string;
+    object: string;
+    created: number;
+    owned_by: string;
+  }> {
+    const models = this.config.availableModels || [
+      'claude-sonnet-4-5',
+      'claude-opus-4-5',
+      'claude-sonnet-3-5',
+      'claude-haiku-3-5'
+    ];
+
+    return models.map((modelId) => ({
+      id: modelId,
+      object: 'model',
+      created: Math.floor(Date.now() / 1000),
+      owned_by: 'anthropic'
+    }));
   }
 
   /**

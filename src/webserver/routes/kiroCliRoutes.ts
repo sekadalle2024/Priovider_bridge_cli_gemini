@@ -344,4 +344,41 @@ router.post('/v1/completions', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * GET /v1/kiro-cli/models
+ * Liste des modèles disponibles (format OpenAI)
+ */
+router.get('/v1/models', async (req: Request, res: Response) => {
+  try {
+    const kiroService = getKiroCliService();
+
+    const available = await kiroService.checkAvailability();
+    if (!available) {
+      return res.status(503).json({
+        error: {
+          message: 'Kiro CLI is not available',
+          type: 'service_unavailable',
+          code: 'kiro_cli_unavailable'
+        }
+      });
+    }
+
+    const models = kiroService.getAvailableModels();
+
+    res.json({
+      object: 'list',
+      data: models
+    });
+  } catch (error) {
+    console.error('Kiro CLI models error:', error);
+    res.status(500).json({
+      error: {
+        message: error.message,
+        type: 'server_error',
+        code: 'internal_error'
+      }
+    });
+  }
+});
+
 export default router;
