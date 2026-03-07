@@ -15,8 +15,11 @@ Le serveur Multi-CLI Gemini est maintenant 100% opérationnel et compatible avec
 ### Endpoints
 - **Models:** `GET /api/v1/cli/models` ✅
 - **Chat (Load Balancer):** `POST /api/v1/cli/chat` ✅
+- **Chat Completions (n8n):** `POST /api/v1/cli/chat/completions` ✅
 - **Chat (Profile2):** `POST /api/v1/cli/profile2/chat` ✅
+- **Chat Completions (Profile2):** `POST /api/v1/cli/profile2/chat/completions` ✅
 - **Chat (Profile3):** `POST /api/v1/cli/profile3/chat` ✅
+- **Chat Completions (Profile3):** `POST /api/v1/cli/profile3/chat/completions` ✅
 - **Profiles:** `GET /api/v1/cli/profiles` ✅
 - **Stats:** `GET /api/v1/cli/profiles/stats` ✅
 - **Health:** `GET /health` ✅
@@ -134,9 +137,11 @@ Le serveur démarre sur le port **25815**
 - ✅ Serveur Multi-CLI opérationnel
 - ✅ 2 profils actifs (profile2, profile3)
 - ✅ Endpoint `/models` implémenté
+- ✅ Endpoint `/chat/completions` implémenté (format OpenAI)
 - ✅ 6 modèles disponibles (dont "auto")
 - ✅ Mode "auto" testé et fonctionnel
 - ✅ Mode "gemini-2.5-flash" testé et fonctionnel
+- ✅ Endpoint `/chat/completions` testé (Status 200)
 - ✅ Load balancing round-robin
 - ✅ Haute disponibilité avec failover
 - ✅ Format OpenAI compatible
