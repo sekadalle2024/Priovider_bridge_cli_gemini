@@ -86,6 +86,103 @@ router.get('/models', (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /api/v1/cli/{profileId}/models:
+ *   get:
+ *     summary: Liste des modèles pour un profil spécifique (format OpenAI)
+ *     tags: [Multi Gemini CLI]
+ *     parameters:
+ *       - in: path
+ *         name: profileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Liste des modèles
+ */
+router.get('/:profileId/models', (req: Request, res: Response) => {
+  try {
+    const profileId = req.params.profileId as string;
+    const profile = multiGeminiCliService.getProfile(profileId);
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        error: `Profile ${profileId} not found`
+      });
+    }
+
+    const models = [
+      {
+        id: 'auto',
+        object: 'model',
+        created: 1704067200,
+        owned_by: 'google',
+        permission: [],
+        root: 'auto',
+        parent: null
+      },
+      {
+        id: 'gemini-2.5-flash',
+        object: 'model',
+        created: 1704067200,
+        owned_by: 'google',
+        permission: [],
+        root: 'gemini-2.5-flash',
+        parent: null
+      },
+      {
+        id: 'gemini-2.5-pro',
+        object: 'model',
+        created: 1704067200,
+        owned_by: 'google',
+        permission: [],
+        root: 'gemini-2.5-pro',
+        parent: null
+      },
+      {
+        id: 'gemini-2.0-flash',
+        object: 'model',
+        created: 1704067200,
+        owned_by: 'google',
+        permission: [],
+        root: 'gemini-2.0-flash',
+        parent: null
+      },
+      {
+        id: 'gemini-1.5-flash',
+        object: 'model',
+        created: 1704067200,
+        owned_by: 'google',
+        permission: [],
+        root: 'gemini-1.5-flash',
+        parent: null
+      },
+      {
+        id: 'gemini-1.5-pro',
+        object: 'model',
+        created: 1704067200,
+        owned_by: 'google',
+        permission: [],
+        root: 'gemini-1.5-pro',
+        parent: null
+      }
+    ];
+
+    res.json({
+      object: 'list',
+      data: models
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * @swagger
  * /api/v1/cli/profiles:
  *   get:
  *     summary: Liste tous les profils Gemini CLI
