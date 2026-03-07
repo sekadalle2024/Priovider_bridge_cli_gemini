@@ -6,12 +6,27 @@
 
 **Gemini CLI DOIT être installé** pour que les assistants fonctionnent.
 
+**Version recommandée:** v0.32.1 ou supérieure
+
 ```bash
-npm install -g @google/generative-ai-cli
+# Installation/Mise à jour
+npm install -g @google/gemini-cli@latest
+
+# Vérification
+gemini --version  # Devrait afficher 0.32.1
+
+# Authentification
 gemini auth login
 ```
 
-Voir : **[GEMINI_CLI_OBLIGATOIRE.md](../GEMINI_CLI_OBLIGATOIRE.md)** pour plus de détails.
+**Nouveautés v0.32.1:**
+- 🆕 Gemini 3.1 Pro Preview
+- ⚡ Chargement parallèle des extensions
+- 🤖 Generalist Agent pour routage intelligent
+- 📋 Plan Mode amélioré
+- 🌐 Browser Agent expérimental
+
+Voir : **[UPDATE_GEMINI_CLI_v0.32.md](./UPDATE_GEMINI_CLI_v0.32.md)** pour plus de détails.
 
 ### 🌐 URLs du Serveur
 
@@ -50,17 +65,31 @@ POST   http://localhost:25810/api/assistant/{name}
 GET    http://localhost:25810/api/assistants
 ```
 
-### 🎨 9 Modèles Gemini Disponibles
+### 🎨 Modèles Gemini Disponibles
 
-1. `gemini-3-flash` - Ultra-rapide
+#### Gemini 3.x (Nécessite accès)
+1. `gemini-3.1-pro-preview` - 🆕 Nouveau modèle (v0.32.1)
 2. `gemini-3-pro` - Haute qualité
-3. `gemini-2.5-flash` - Équilibré
+3. `gemini-3-flash` - Ultra-rapide
+
+#### Gemini 2.5
 4. `gemini-2.5-pro` - Premium
-5. `gemini-2.5-flash-lite` - Léger
-6. `gemini-2.0-flash` - Standard
-7. `gemini-1.5-flash` - Stable
+5. `gemini-2.5-flash` - Équilibré (défaut)
+6. `gemini-2.5-flash-lite` - Léger
+
+#### Gemini 2.0 et 1.5
+7. `gemini-2.0-flash` - Standard
 8. `gemini-1.5-pro` - Très haute qualité
-9. `gemini-exp-1206` - Expérimental
+9. `gemini-1.5-flash` - Stable
+
+#### Expérimental
+10. `gemini-exp-1206` - Expérimental
+
+#### Alias (Recommandés)
+- `auto` - Routage intelligent (meilleur modèle disponible)
+- `pro` - Meilleur modèle Pro
+- `flash` - Meilleur modèle Flash
+- `flash-lite` - Modèle léger
 
 ### 🎯 12 Assistants Disponibles
 
