@@ -595,8 +595,8 @@ const options: swaggerJsdoc.Options = {
       '/api/v1/cli/profile4/chat': {
         post: {
           tags: ['Chat'],
-          summary: 'Chat avec Profile 4 (ohada.save10@gmail.com)',
-          description: 'Envoie un message en utilisant spécifiquement le compte ohada.save10@gmail.com',
+          summary: 'Chat avec Profile 4 (ohada.save12@gmail.com)',
+          description: 'Envoie un message en utilisant spécifiquement le compte ohada.save12@gmail.com',
           requestBody: {
             required: true,
             content: {

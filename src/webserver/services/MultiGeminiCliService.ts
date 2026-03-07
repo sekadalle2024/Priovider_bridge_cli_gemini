@@ -284,11 +284,11 @@ export class MultiGeminiCliService {
         reject(error);
       });
 
-      // Timeout après 60 secondes
+      // Timeout après 3000 secondes (50 minutes)
       setTimeout(() => {
         gemini.kill();
         reject(new Error('Gemini CLI timeout'));
-      }, 60000);
+      }, 3000000);
     });
   }
 
