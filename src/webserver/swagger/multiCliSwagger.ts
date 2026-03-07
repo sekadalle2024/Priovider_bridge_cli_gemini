@@ -322,7 +322,7 @@ const options: swaggerJsdoc.Options = {
               required: true,
               schema: {
                 type: 'string',
-                enum: ['profile1', 'profile2', 'profile3']
+                enum: ['profile1', 'profile2', 'profile3', 'profile4']
               },
               description: 'ID du profil'
             }
@@ -540,6 +540,79 @@ const options: swaggerJsdoc.Options = {
                         {
                           role: 'user',
                           content: 'Bonjour depuis profile3'
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            '200': {
+              description: 'Réponse du chat',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/ChatResponse'
+                  }
+                }
+              }
+            },
+            '400': {
+              description: 'Requête invalide',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error'
+                  }
+                }
+              }
+            },
+            '404': {
+              description: 'Profil non trouvé',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error'
+                  }
+                }
+              }
+            },
+            '500': {
+              description: 'Erreur serveur',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      '/api/v1/cli/profile4/chat': {
+        post: {
+          tags: ['Chat'],
+          summary: 'Chat avec Profile 4 (ohada.save6@gmail.com)',
+          description: 'Envoie un message en utilisant spécifiquement le compte ohada.save6@gmail.com',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ChatRequest'
+                },
+                examples: {
+                  simple: {
+                    summary: 'Message simple',
+                    value: {
+                      model: 'gemini-2.5-flash',
+                      messages: [
+                        {
+                          role: 'user',
+                          content: 'Bonjour depuis profile4'
                         }
                       ]
                     }

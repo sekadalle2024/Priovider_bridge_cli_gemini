@@ -2,7 +2,7 @@
 
 ## ✅ Configuration Terminée
 
-Vous disposez maintenant de **2 endpoints OpenAI compatibles**, un pour chaque compte Google:
+Vous disposez maintenant de **3 endpoints OpenAI compatibles**, un pour chaque compte Google:
 
 ## 📡 URLs des Endpoints
 
@@ -14,6 +14,11 @@ http://localhost:25815/api/v1/cli/profile2/chat
 ### Profile 3 - ohada.save3@gmail.com
 ```
 http://localhost:25815/api/v1/cli/profile3/chat
+```
+
+### Profile 4 - ohada.save6@gmail.com
+```
+http://localhost:25815/api/v1/cli/profile4/chat
 ```
 
 ## 🚀 Utilisation Immédiate
@@ -33,6 +38,17 @@ curl -X POST http://localhost:25815/api/v1/cli/profile2/chat \
 
 ```bash
 curl -X POST http://localhost:25815/api/v1/cli/profile3/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-2.5-flash",
+    "messages": [{"role": "user", "content": "Bonjour"}]
+  }'
+```
+
+### Test Rapide - Profile 4
+
+```bash
+curl -X POST http://localhost:25815/api/v1/cli/profile4/chat \
   -H "Content-Type: application/json" \
   -d '{
     "model": "gemini-2.5-flash",
@@ -72,6 +88,21 @@ curl -X POST http://localhost:25815/api/v1/cli/profile3/chat \
 }
 ```
 
+### Pour Profile 4
+
+**Nœud HTTP Request:**
+- Method: `POST`
+- URL: `http://localhost:25815/api/v1/cli/profile4/chat`
+- Body:
+```json
+{
+  "model": "gemini-2.5-flash",
+  "messages": [
+    {"role": "user", "content": "{{ $json.message }}"}
+  ]
+}
+```
+
 ## 💡 Cas d'Usage Recommandés
 
 ### Séparation par Environnement
@@ -86,6 +117,11 @@ curl -X POST http://localhost:25815/api/v1/cli/profile3/chat \
 - Tests
 - Expérimentations
 
+**Profile 4 (ohada.save6@gmail.com)**
+- Staging
+- Intégration continue
+- Workflows automatisés
+
 ### Séparation par Projet
 
 **Profile 2**
@@ -95,6 +131,10 @@ curl -X POST http://localhost:25815/api/v1/cli/profile3/chat \
 **Profile 3**
 - Projet B
 - Workflows n8n
+
+**Profile 4**
+- Projet C
+- API publique
 
 ## 📊 Monitoring
 
@@ -108,6 +148,11 @@ curl http://localhost:25815/api/v1/cli/profiles/profile2
 curl http://localhost:25815/api/v1/cli/profiles/profile3
 ```
 
+### Voir les Stats de Profile 4
+```bash
+curl http://localhost:25815/api/v1/cli/profiles/profile4
+```
+
 ### Voir Toutes les Stats
 ```bash
 curl http://localhost:25815/api/v1/cli/profiles/stats
@@ -115,7 +160,7 @@ curl http://localhost:25815/api/v1/cli/profiles/stats
 
 ## 🎯 Résumé
 
-✅ **2 endpoints OpenAI compatibles**  
+✅ **3 endpoints OpenAI compatibles**  
 ✅ **Un par compte Google**  
 ✅ **Pas de distribution automatique**  
 ✅ **Contrôle total sur quel compte utiliser**  
@@ -127,10 +172,11 @@ Pour plus de détails, consultez:
 - **[ENDPOINTS_OPENAI_PAR_COMPTE.md](ENDPOINTS_OPENAI_PAR_COMPTE.md)** - Guide complet
 - **[MULTI_CLI_FINAL_SUMMARY.md](MULTI_CLI_FINAL_SUMMARY.md)** - Vue d'ensemble
 - **[AUTH_PROFILE3_SUCCESS.md](AUTH_PROFILE3_SUCCESS.md)** - Authentification profile3
+- **[PROFILE4_INTEGRATION_GUIDE.md](PROFILE4_INTEGRATION_GUIDE.md)** - Intégration profile4
 
 ---
 
 **Serveur**: http://localhost:25815  
 **Status**: ✅ En ligne  
-**Profils**: 2 actifs
+**Profils**: 3 configurés (2 actifs + 1 en attente d'authentification)
 
