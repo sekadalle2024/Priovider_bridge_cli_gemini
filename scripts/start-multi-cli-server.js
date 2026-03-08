@@ -41,7 +41,9 @@ console.log(`  Port: ${process.env.PORT || 25810}`);
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// Augmenter la limite de payload pour supporter les prompts longs
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes de base
 app.get('/health', (_req, res) => {

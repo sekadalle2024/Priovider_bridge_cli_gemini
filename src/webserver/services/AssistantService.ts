@@ -189,9 +189,22 @@ export class AssistantService {
    */
   private async runGeminiCli(prompt: string, model: string): Promise<string> {
     return new Promise((resolve, reject) => {
+      // Utiliser un modèle spécifique au lieu de "auto" pour éviter OAuth
+      let actualModel = model;
+      if (model === 'auto' || !model) {
+        actualModel = 'gemini-2.5-flash';
+      }
+      
       // Utiliser stdin au lieu de --prompt pour éviter la limite de longueur de ligne de commande
-      const args = ['--model', model];
-      const process = spawn(this.geminiCliPath, args);
+      const args = ['--model', actualModel];
+      
+      // Ajouter l'API Key dans l'environnement pour éviter OAuth
+      const env = {
+        ...process.env,
+        GEMINI_API_KEY: process.env.GEMINI_API_KEY_OHADA_FINANCE_A || ''
+      };
+      
+      const process = spawn(this.geminiCliPath, args, { env });
 
       let output = '';
       let errorOutput = '';

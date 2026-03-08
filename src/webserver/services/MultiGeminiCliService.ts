@@ -217,14 +217,20 @@ export class MultiGeminiCliService {
     request: ChatRequest
   ): Promise<ChatResponse> {
     return new Promise((resolve, reject) => {
-      const model = request.model || 'gemini-2.5-flash';
+      // Utiliser un modèle spécifique au lieu de "auto" pour éviter OAuth
+      let model = request.model || 'gemini-2.5-flash';
+      if (model === 'auto') {
+        model = 'gemini-2.5-flash';
+      }
+      
       const lastMessage = request.messages[request.messages.length - 1];
       const prompt = lastMessage.content;
 
-      // Préparer l'environnement
+      // Préparer l'environnement avec API Key pour éviter OAuth
       const env = {
         ...process.env,
-        GEMINI_CLI_HOME: profile.home
+        GEMINI_CLI_HOME: profile.home,
+        GEMINI_API_KEY: this.getApiKeyForProfile(profile.id)
       };
 
       // ✅ CORRECTION PROMPTS LONGS
@@ -314,6 +320,17 @@ export class MultiGeminiCliService {
     if (stats) {
       stats.isAvailable = false;
     }
+  }
+
+  private getApiKeyForProfile(profileId: string): string {
+    // Mapper les profils aux API Keys pour éviter OAuth
+    const apiKeys: Record<string, string> = {
+      'profile1': process.env.GEMINI_API_KEY_OHADA_FINANCE_A || '',
+      'profile2': process.env.GEMINI_API_KEY_OHADA_SAVE_A || '',
+      'profile3': process.env.GEMINI_API_KEY_OHADA_SAVE2_A || '',
+      'profile4': process.env.GEMINI_API_KEY_OHADA_SAVE2_B || ''
+    };
+    return apiKeys[profileId] || process.env.GEMINI_API_KEY_OHADA_FINANCE_A || '';
   }
 }
 
