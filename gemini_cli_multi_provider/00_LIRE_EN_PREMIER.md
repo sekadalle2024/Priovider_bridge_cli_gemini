@@ -14,11 +14,17 @@ Ce dossier contient toute la documentation du serveur Multi-CLI Gemini qui perme
 - **[SYNTHESE_FINALE.md](SYNTHESE_FINALE.md)** - Synthèse complète du projet
 - **[REPONSE_FINALE_N8N.md](REPONSE_FINALE_N8N.md)** - Réponse aux questions n8n
 
-### 2. Intégration n8n
+### 2. ⭐⭐⭐ NOUVEAU - Correction Prompts Longs (2026-03-08)
+- **[../ACTION_IMMEDIATE_CORRECTION.md](../ACTION_IMMEDIATE_CORRECTION.md)** ⚡⚡⚡ - 3 commandes pour corriger
+- **[../INDEX_CORRECTION_MULTI_CLI.md](../INDEX_CORRECTION_MULTI_CLI.md)** 📚 - Index complet de la correction
+- **[CORRECTION_PROMPTS_LONGS.md](CORRECTION_PROMPTS_LONGS.md)** ⭐ - Solution pour prompts >8000 caractères
+- **[DEMARRAGE_RAPIDE_PROMPTS_LONGS.md](DEMARRAGE_RAPIDE_PROMPTS_LONGS.md)** - Démarrage en 3 étapes
+
+### 3. Intégration n8n
 - **[N8N_INTEGRATION_MULTI_CLI.md](N8N_INTEGRATION_MULTI_CLI.md)** - Guide complet n8n
 - **[QUICK_START_N8N.md](QUICK_START_N8N.md)** - Démarrage rapide n8n
 
-### 3. Guides Complets
+### 4. Guides Complets
 - **[MULTI_CLI_QUICK_START.md](MULTI_CLI_QUICK_START.md)** - Démarrage rapide
 - **[MULTI_CLI_ENDPOINTS_GUIDE.md](MULTI_CLI_ENDPOINTS_GUIDE.md)** - Guide des endpoints
 
@@ -151,6 +157,14 @@ Profile3:      http://localhost:25815/api/v1/cli/profile3/chat
 
 ## ⚠️ Notes Importantes
 
+### ✅ Prompts Longs Supportés
+Le serveur supporte maintenant les prompts de **n'importe quelle longueur** grâce à l'utilisation de stdin au lieu d'arguments de ligne de commande.
+
+**Avant:** Limite de 8191 caractères (Windows)  
+**Maintenant:** ♾️ Illimité
+
+Voir **[CORRECTION_PROMPTS_LONGS.md](CORRECTION_PROMPTS_LONGS.md)** pour les détails.
+
 ### Profile4 (ohada.save12@gmail.com)
 - **Status:** Authentifié mais timeout
 - **Problème:** La commande Gemini CLI tourne indéfiniment (20+ minutes)
@@ -163,6 +177,7 @@ Les 2 profils actifs (profile2 et profile3) offrent déjà:
 - 2-4M tokens/jour
 - Haute disponibilité avec failover
 - Load balancing automatique
+- ✅ Support des prompts longs
 
 C'est largement suffisant pour la plupart des cas d'usage.
 

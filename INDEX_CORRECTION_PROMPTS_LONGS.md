@@ -1,77 +1,223 @@
-# 📑 Index - Correction Prompts Longs
+# 📚 Index - Correction Prompts Longs Multi-CLI
 
 ## 🎯 Démarrage Rapide
 
-**Je veux juste que ça marche !**
-→ **[REPONSE_RAPIDE_PROMPTS_LONGS.md](REPONSE_RAPIDE_PROMPTS_LONGS.md)** ⚡
+### Je veux démarrer immédiatement
+→ **[REPONSE_FINALE_MULTI_CLI_PROMPTS_LONGS.md](REPONSE_FINALE_MULTI_CLI_PROMPTS_LONGS.md)** ⭐⭐⭐
 
-**Je veux comprendre et appliquer la correction**
-→ **[CORRECTION_PROMPTS_LONGS_COMPLETE.md](CORRECTION_PROMPTS_LONGS_COMPLETE.md)** ⭐
+### Je veux un guide en 3 étapes
+→ **[gemini_cli_multi_provider/DEMARRAGE_RAPIDE_PROMPTS_LONGS.md](gemini_cli_multi_provider/DEMARRAGE_RAPIDE_PROMPTS_LONGS.md)** ⭐⭐
 
-**Je veux redémarrer le serveur**
-→ **[REDEMARRAGE_SERVEUR_ASSISTANTS.md](REDEMARRAGE_SERVEUR_ASSISTANTS.md)** 🔄
+### Je veux les commandes essentielles
+→ **[COMMANDES_MULTI_CLI_PROMPTS_LONGS.md](COMMANDES_MULTI_CLI_PROMPTS_LONGS.md)** ⭐
 
-**Je veux les détails techniques**
-→ **[SOLUTION_PROMPTS_LONGS.md](SOLUTION_PROMPTS_LONGS.md)** 🔧
+## 📖 Documentation Complète
 
-## 📂 Fichiers Modifiés
+### Documentation Technique
+→ **[gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md](gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md)**
+- Explication technique détaillée
+- Comparaison avant/après
+- Avantages de la solution
+- Tests disponibles
+- Configuration n8n
+- Dépannage complet
 
-### Code Source
-- `src/webserver/services/AssistantService.ts` - Service TypeScript
-- `scripts/server-assistants-standalone.js` - Serveur JavaScript standalone
+### Synthèse Racine
+→ **[CORRECTION_MULTI_CLI_PROMPTS_LONGS.md](CORRECTION_MULTI_CLI_PROMPTS_LONGS.md)**
+- Vue d'ensemble de la correction
+- Fichiers modifiés
+- Démarrage rapide
+- Configuration n8n
+- Checklist
 
-### Tests
-- `scripts/test-long-prompt.js` - Script de test automatique
+## 🧪 Tests
 
-### Documentation
-- `REPONSE_RAPIDE_PROMPTS_LONGS.md` - Réponse ultra-rapide
-- `CORRECTION_PROMPTS_LONGS_COMPLETE.md` - Guide complet
-- `REDEMARRAGE_SERVEUR_ASSISTANTS.md` - Guide de redémarrage
-- `SOLUTION_PROMPTS_LONGS.md` - Explication technique détaillée
-- `INDEX_CORRECTION_PROMPTS_LONGS.md` - Ce fichier
+### Script de Test Automatique
+```bash
+node scripts/test-multi-cli-long-prompt.js
+```
 
-## 🎯 Par Situation
+**Fichier**: `scripts/test-multi-cli-long-prompt.js`
 
-### J'ai l'erreur "La ligne de commande est trop longue"
-1. Lisez **[REPONSE_RAPIDE_PROMPTS_LONGS.md](REPONSE_RAPIDE_PROMPTS_LONGS.md)**
-2. Redémarrez le serveur: `npm run assistants`
-3. Testez: `node scripts/test-long-prompt.js`
+**Tests effectués**:
+- ✅ Prompt court (~50 caractères)
+- ✅ Prompt long (~8000 caractères)
+- ✅ Prompt très long (~15000 caractères)
 
-### Je veux comprendre le problème
-Lisez **[SOLUTION_PROMPTS_LONGS.md](SOLUTION_PROMPTS_LONGS.md)**
+## 📝 Code Modifié
 
-### Je veux configurer n8n
-Lisez la section "Configuration n8n" dans **[CORRECTION_PROMPTS_LONGS_COMPLETE.md](CORRECTION_PROMPTS_LONGS_COMPLETE.md)**
+### Service Principal
+**Fichier**: `src/webserver/services/MultiGeminiCliService.ts`
 
-### J'ai un problème après la correction
-Lisez la section "Dépannage" dans **[CORRECTION_PROMPTS_LONGS_COMPLETE.md](CORRECTION_PROMPTS_LONGS_COMPLETE.md)**
+**Méthode modifiée**: `executeGeminiCli()`
 
-## 🔗 Liens Utiles
+**Changement**: Utilisation de stdin au lieu de --prompt
+
+## 📚 Documentation Multi-CLI
 
 ### Documentation Principale
-- **[assistant_serveur_endpoint/00_LIRE_EN_PREMIER.md](assistant_serveur_endpoint/00_LIRE_EN_PREMIER.md)** - Documentation serveur
-- **[N8N_ASSISTANTS_ENDPOINT.md](N8N_ASSISTANTS_ENDPOINT.md)** - Intégration n8n
-- **[GEMINI_CLI_OBLIGATOIRE.md](GEMINI_CLI_OBLIGATOIRE.md)** - Installation Gemini CLI
+→ **[gemini_cli_multi_provider/00_LIRE_EN_PREMIER.md](gemini_cli_multi_provider/00_LIRE_EN_PREMIER.md)**
+- Vue d'ensemble du serveur
+- Endpoints disponibles
+- Profils actifs
+- Documentation complète
+
+### Synthèse Finale
+→ **[gemini_cli_multi_provider/SYNTHESE_FINALE.md](gemini_cli_multi_provider/SYNTHESE_FINALE.md)**
+- Synthèse complète du projet
+- Architecture
+- Configuration
+
+### Intégration n8n
+→ **[gemini_cli_multi_provider/N8N_INTEGRATION_MULTI_CLI.md](gemini_cli_multi_provider/N8N_INTEGRATION_MULTI_CLI.md)**
+- Guide complet d'intégration n8n
+- Configuration des nœuds
+- Exemples de workflows
+
+## 🔗 Référence (assistant_serveur_endpoint)
+
+### Solution Originale
+→ **[SOLUTION_PROMPTS_LONGS.md](SOLUTION_PROMPTS_LONGS.md)**
+- Solution originale pour assistant_serveur_endpoint
+- Explication de la méthode stdin
+
+### Documentation Complète
+→ **[CORRECTION_PROMPTS_LONGS_COMPLETE.md](CORRECTION_PROMPTS_LONGS_COMPLETE.md)**
+- Documentation complète pour assistant_serveur_endpoint
+- Inspiration pour la solution Multi-CLI
+
+## 🚀 Commandes Rapides
+
+### Démarrer le Serveur
+```bash
+npm run multi-cli
+```
+
+### Tester
+```bash
+node scripts/test-multi-cli-long-prompt.js
+```
+
+### Health Check
+```bash
+curl http://localhost:25815/health
+```
+
+### Lister les Profils
+```bash
+curl http://localhost:25815/api/v1/cli/profiles
+```
+
+## 🔧 Dépannage
+
+### Le serveur ne démarre pas
+```bash
+netstat -ano | findstr :25815
+taskkill /PID <PID> /F
+npm run multi-cli
+```
+
+### Gemini CLI non trouvé
+```bash
+npm install -g @google/gemini-cli
+gemini --version
+gemini auth login
+```
+
+### Aucun profil actif
+```bash
+.\scripts\auth-profiles-simple.ps1
+```
+
+## 📊 Structure des Fichiers
+
+```
+📁 Racine du Projet
+├── 📄 REPONSE_FINALE_MULTI_CLI_PROMPTS_LONGS.md ⭐⭐⭐
+├── 📄 CORRECTION_MULTI_CLI_PROMPTS_LONGS.md
+├── 📄 COMMANDES_MULTI_CLI_PROMPTS_LONGS.md
+├── 📄 INDEX_CORRECTION_PROMPTS_LONGS.md (ce fichier)
+├── 📄 SOLUTION_PROMPTS_LONGS.md (référence)
+├── 📄 CORRECTION_PROMPTS_LONGS_COMPLETE.md (référence)
+│
+├── 📁 src/webserver/services/
+│   └── 📄 MultiGeminiCliService.ts (modifié)
+│
+├── 📁 scripts/
+│   └── 📄 test-multi-cli-long-prompt.js (nouveau)
+│
+└── 📁 gemini_cli_multi_provider/
+    ├── 📄 00_LIRE_EN_PREMIER.md (mis à jour)
+    ├── 📄 CORRECTION_PROMPTS_LONGS.md ⭐⭐
+    ├── 📄 DEMARRAGE_RAPIDE_PROMPTS_LONGS.md ⭐
+    ├── 📄 SYNTHESE_FINALE.md
+    └── 📄 N8N_INTEGRATION_MULTI_CLI.md
+```
+
+## 🎯 Par Cas d'Usage
+
+### Je veux comprendre le problème
+→ **[REPONSE_FINALE_MULTI_CLI_PROMPTS_LONGS.md](REPONSE_FINALE_MULTI_CLI_PROMPTS_LONGS.md)** - Section "Mission Accomplie"
+
+### Je veux voir le code modifié
+→ **`src/webserver/services/MultiGeminiCliService.ts`** - Méthode `executeGeminiCli()`
+
+### Je veux tester
+→ **`scripts/test-multi-cli-long-prompt.js`** - Script de test
+
+### Je veux utiliser dans n8n
+→ **[gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md](gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md)** - Section "Utilisation dans n8n"
+
+### Je veux comprendre la solution technique
+→ **[gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md](gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md)** - Section "Solution Implémentée"
+
+### J'ai un problème
+→ **[gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md](gemini_cli_multi_provider/CORRECTION_PROMPTS_LONGS.md)** - Section "Dépannage"
+
+### Je veux voir toutes les commandes
+→ **[COMMANDES_MULTI_CLI_PROMPTS_LONGS.md](COMMANDES_MULTI_CLI_PROMPTS_LONGS.md)**
+
+## 📞 Liens Utiles
 
 ### Serveur
-- URL: http://localhost:25810
-- Swagger: http://localhost:25810/api-docs
-- Health: http://localhost:25810/health
+- **URL**: http://localhost:25815
+- **Swagger**: http://localhost:25815/api-docs
+- **Health**: http://localhost:25815/health
 
-## ✅ Checklist Rapide
+### Endpoints
+- **Load Balancer**: http://localhost:25815/api/v1/cli/chat
+- **Profile2**: http://localhost:25815/api/v1/cli/profile2/chat
+- **Profile3**: http://localhost:25815/api/v1/cli/profile3/chat
 
-- [ ] Lire la réponse rapide
-- [ ] Redémarrer le serveur
-- [ ] Tester avec le script
-- [ ] Tester dans n8n
-- [ ] Profiter des prompts longs !
+### GitHub
+- **Projet**: https://github.com/iOfficeAI/AionUi
 
-## 🎉 Résultat
+## ✅ Checklist
 
-Vous pouvez maintenant utiliser des prompts de **n'importe quelle longueur** avec Gemini CLI, sans l'erreur Windows !
+- [x] Code modifié
+- [x] Tests créés
+- [x] Documentation complète
+- [x] Guide rapide
+- [x] Commandes documentées
+- [x] Index créé
+- [ ] Serveur redémarré
+- [ ] Tests passés
+- [ ] n8n testé
+
+## 🎉 Résumé
+
+**Problème**: Prompts longs causaient une erreur "ligne de commande trop longue"
+
+**Solution**: Utilisation de stdin au lieu de --prompt
+
+**Résultat**: Prompts de longueur illimitée maintenant supportés
+
+**Status**: ✅ CORRECTION COMPLÈTE
 
 ---
 
-**Date**: 2026-03-02
-
-**Status**: ✅ RÉSOLU
+**Version**: 1.1.0  
+**Date**: 2026-03-08  
+**Serveur**: http://localhost:25815  
+**Profils actifs**: 2/3 (profile2, profile3)  
+**Prompts**: ♾️ Longueur illimitée

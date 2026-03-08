@@ -104,7 +104,7 @@ export class MultiGeminiCliService {
   }
 
   private initializeStats(): void {
-    for (const [profileId] of this.profiles) {
+    this.profiles.forEach((profile, profileId) => {
       this.stats.set(profileId, {
         requests: 0,
         errors: 0,
@@ -112,7 +112,7 @@ export class MultiGeminiCliService {
         lastUsed: null,
         isAvailable: true
       });
-    }
+    });
   }
 
   public getProfiles(): GeminiCliProfile[] {
@@ -227,15 +227,20 @@ export class MultiGeminiCliService {
         GEMINI_CLI_HOME: profile.home
       };
 
-      // Créer le processus Gemini CLI
-      // Note: Gemini CLI v0.32.1 - utiliser UNIQUEMENT --prompt pour le mode non-interactif
-      // Sur Windows avec shell:true, passer la commande complète comme une chaîne
-      // pour éviter les problèmes d'interprétation des arguments
-      const command = `gemini -m ${model} --prompt "${prompt.replace(/"/g, '\\"')}"`;
-      const gemini = spawn(command, [], {
+      // ✅ CORRECTION PROMPTS LONGS
+      // Utiliser stdin au lieu de --prompt pour contourner la limite Windows de 8191 caractères
+      // Cette méthode fonctionne avec des prompts de n'importe quelle longueur
+      const args = ['--model', model];
+      const gemini = spawn('gemini', args, {
         env,
         shell: true
       });
+
+      // Écrire le prompt dans stdin au lieu de le passer comme argument
+      if (gemini.stdin) {
+        gemini.stdin.write(prompt);
+        gemini.stdin.end();
+      }
 
       let stdout = '';
       let stderr = '';
